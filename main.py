@@ -9,7 +9,7 @@ from text_analyzer import JobsWords
 #     "city": "Madrid",
 #     "region": "Community of Madrid",
 #     "country": "Spain",
-#     "time_range": "Past Month"
+#     "time_range": "Past 24 hours"
 # }
 
 JOB_SEARCH_SPECS = {
@@ -17,7 +17,7 @@ JOB_SEARCH_SPECS = {
     "city": "London",
     "region": "England",
     "country": "United Kingdom",
-    "time_range": "Past 24 hours"
+    "time_range": "Past Month"
 }
 
 KEY_WORDS = [

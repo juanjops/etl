@@ -6,6 +6,9 @@ import collections
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 CHROME_OPTIONS = webdriver.ChromeOptions()
@@ -91,6 +94,11 @@ class Linkedinbot():
 
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(uniform(3, 6))
+            try:
+                self.driver.find_element_by_xpath(
+                    "//button[@aria-label='Load more results']").click()
+            except:
+                pass
             new_height = self.driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
                 break
@@ -106,10 +114,16 @@ class Linkedinbot():
 
     def get_jobid_texts(self, jobs_id):
 
-        jobs_data = []
+        jobs_data = []       
 
-        jobs_card = self.driver.find_elements_by_xpath("//a[@class='result-card__full-card-link']")
+        jobs_card = WebDriverWait(self.driver, 5).until(
+            EC.visibility_of_all_elements_located((
+                By.XPATH,
+                "//ul[@class='jobs-search__results-list']//a[@class='result-card__full-card-link']")))
 
+        print(len(jobs_card), len(jobs_id))
+
+        exit()
         if len(jobs_card) != len(jobs_id):
 
             print("ids and cards not the same")
@@ -204,4 +218,5 @@ class Linkedinbot():
             "months": float(name.split(" ")[0])*30,
             "month": float(name.split(" ")[0])*30
             }
+
         return switcher.get(name.split(" ")[1], "Invalid day of week")
