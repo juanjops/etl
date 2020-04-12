@@ -1,13 +1,12 @@
 import time
-import re
-from random import uniform
-import collections
+from random import uniform, shuffle
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import re
 
 
 CHROME_OPTIONS = webdriver.ChromeOptions()
@@ -25,37 +24,64 @@ TIMES_PARAMETERS = {
     "Any Time": ""}
 
 
-class Linkedinbot():
+class bot_jobs_id():
 
-    def __init__(self, driver):
+    def __init__(self, driver, user, password):
 
         self.driver = DRIVERS[driver]
+        self.user = user
+        self.password = password
 
-    def get_jobs_data(self, job_search_specifics):
+    def get_jobs_id(self, job_search_specifics):
 
-        jobs_url = Linkedinbot.get_jobs_url(job_search_specifics)
-        self.driver.get(jobs_url)
-        Linkedinbot.sleep()
-        self.scroll()
-        jobs_id = self.get_jobs_id()
-        Linkedinbot.sleep()
-        jobs_data = self.get_jobid_texts(jobs_id, job_search_specifics)
-        Linkedinbot.sleep()
+        self.log_in()
+        bot_jobs_id.sleep()
+        jobs_id = self.get_ids(job_search_specifics)
+        shuffle(jobs_id)
 
-        return jobs_data
+        return jobs_id
+
+    def log_in(self) -> None:
+
+        self.driver.get(LINKEDIN_URL + "/login")
+        user = self.driver.find_element_by_id("username")
+        user.send_keys(self.user)
+        password = self.driver.find_element_by_id("password")
+        password.send_keys(self.password)
+        password.submit()
 
     @staticmethod
     def sleep() -> None:
 
         time.sleep(uniform(TIME_SLEEP_GAP[0], TIME_SLEEP_GAP[1]))
 
-    def get_jobs_id(self):
+    def get_ids(self, job_search_specifics):
 
-        html_code = self.driver.page_source
-        soup = BeautifulSoup(html_code, "lxml")
-        jobs_id_html = soup.select("li[data-id]")
-        jobs_id = [job_id["data-id"] for job_id in jobs_id_html]
-        self.check_repeated_elements(jobs_id)
+        jobs_url = bot_jobs_id.get_jobs_url(job_search_specifics)
+        self.driver.get(jobs_url)
+        jobs_id = []
+        page_number = 1
+
+        while page_number < 100:
+            try:
+                page = WebDriverWait(self.driver, 5).until(
+                    EC.element_to_be_clickable((
+                        By.XPATH, f'//button[@aria-label="Page {page_number}"]')))
+                page.click()
+                bot_jobs_id.sleep()
+                self.scroll_job_list()
+                html_code = self.driver.page_source
+                soup = BeautifulSoup(html_code, "lxml")
+                jobs_id_page_html = soup.select("div[data-job-id]")
+                jobs_id_page = [
+                    job_id["data-job-id"].split(":")[-1] for job_id in jobs_id_page_html]
+                jobs_id = jobs_id + jobs_id_page
+                self.check_repeated_elements(jobs_id)
+            except:
+                break
+            page_number += 1
+            bot_jobs_id.sleep()
+
         jobs_id_not_repeated = list(dict.fromkeys(jobs_id))
 
         return jobs_id_not_repeated
@@ -63,16 +89,23 @@ class Linkedinbot():
     @staticmethod
     def get_jobs_url(job_search_specifics):
 
-        job_list_url = (
-            LINKEDIN_URL + "/jobs/search/?" +
-            "keywords=" + Linkedinbot.adapt_words(job_search_specifics["position"]) + "%2C%20"
-            "&location=" + Linkedinbot.adapt_words(job_search_specifics["city"]) + "%2C%20" +
-            Linkedinbot.adapt_words(job_search_specifics["region"]) + "%2C%20" +
-            Linkedinbot.adapt_words(job_search_specifics["country"]) +
-            "&trk=public_jobs_jobs-search-bar_search-submit&" +
-            TIMES_PARAMETERS[job_search_specifics["time_range"]] +
-            "&redirect=false&position=1&pageNum=0"
-        )
+        if job_search_specifics["time_range"] != "Any Time":
+            job_list_url = (
+                LINKEDIN_URL + "/jobs/search/?" +
+                "f_TPR=" + TIMES_PARAMETERS[job_search_specifics["time_range"]] +
+                "&keywords=" + bot_jobs_id.adapt_words(job_search_specifics["position"]) + "%2C%20"
+                "&location=" + bot_jobs_id.adapt_words(job_search_specifics["city"]) + "%2C%20" +
+                bot_jobs_id.adapt_words(job_search_specifics["region"]) + "%2C%20" +
+                bot_jobs_id.adapt_words(job_search_specifics["country"])
+            )
+        else:
+            job_list_url = (
+                LINKEDIN_URL + "/jobs/search/?" +
+                "&keywords=" + bot_jobs_id.adapt_words(job_search_specifics["position"]) + "%2C%20"
+                "&location=" + bot_jobs_id.adapt_words(job_search_specifics["city"]) + "%2C%20" +
+                bot_jobs_id.adapt_words(job_search_specifics["region"]) + "%2C%20" +
+                bot_jobs_id.adapt_words(job_search_specifics["country"])
+            )
 
         return job_list_url
 
@@ -83,64 +116,59 @@ class Linkedinbot():
 
         return adapted_parameter
 
-    def scroll(self) -> None:
+    def scroll_job_list(self) -> None:
 
-        last_height = self.driver.execute_script("return document.body.scrollHeight")
+        jobs_list = self.driver.find_element_by_class_name("jobs-search-results")
 
-        while True:
+        for piece in range(0, 10):
+            self.driver.execute_script(f"arguments[0].scrollTo(0, {300 * piece})", jobs_list)
+            bot_jobs_id.sleep()
 
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            Linkedinbot.sleep()
-            try:
-                self.driver.find_element_by_xpath(
-                    "//button[@aria-label='Load more results']").click()
-            except:
-                pass
-            new_height = self.driver.execute_script("return document.body.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height
+    def close_driver(self) -> None:
 
-    @staticmethod
-    def check_repeated_elements(jobs_to_check) -> None:
+        self.driver.close()
 
-        repeated_elements = [
-            job for job, count in collections.Counter(jobs_to_check).items() if count > 1]
-        if len(repeated_elements) != 0:
-            print("repeated_elements", repeated_elements)
 
-    def get_jobid_texts(self, jobs_id, job_search_specifics):
+class bot_jobs_data(bot_jobs_id):
+
+    def __init__(self, driver):
+
+        self.driver = DRIVERS[driver]
+
+    def get_jobs_data(self, jobs_id):
 
         jobs_data = []
 
-        jobs_card = WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_all_elements_located((
-                By.XPATH,
-                ("//ul[@class='jobs-search__results-list']" +
-                 "//a[@class='result-card__full-card-link']"))))
+        for job_id in jobs_id:
 
-        if len(jobs_card) != len(jobs_id):
-
-            print(job_search_specifics, "ids and cards not the same")
-
-        for job_id, job_card in zip(jobs_id, jobs_card):
-
-            job_card.click()
-            Linkedinbot.sleep()
             job_data = {}
-            job_data["id"] = job_id
-            src = self.driver.page_source.encode("utf-8")
-            soup = BeautifulSoup(src, "lxml")
+
             try:
-                text = soup.find("div", {"class":"description__text"}).getText()
-                job_data["text"] = text
+                job_data["id"] = job_id
+                self.driver.get(bot_jobs_data.get_one_job_url(job_id))
+                bot_jobs_data.sleep()
+                src = self.driver.page_source.encode("utf-8")
+                soup = BeautifulSoup(src, "lxml")
+                bot_jobs_data.get_top_card_data(soup, job_data)
+                try:
+                    text = soup.find("div", {"class":"description__text"}).getText()
+                    job_data["text"] = text
+                except:
+                    print(job_id, " has no text")
+                bot_jobs_data.get_jobs_details_data(soup, job_data)
             except:
-                print(job_id, " has no text")
-            Linkedinbot.get_top_card_data(soup, job_data)
-            Linkedinbot.get_jobs_details_data(soup, job_data)
+                print("warning connection")
+
             jobs_data.append(job_data)
 
         return jobs_data
+
+    @staticmethod
+    def get_one_job_url(job_id):
+
+        job_url = LINKEDIN_URL + "/jobs/view/" + job_id
+
+        return job_url
 
     @staticmethod
     def get_top_card_data(soup, job_data) ->None:
@@ -200,30 +228,3 @@ class Linkedinbot():
                 'Industries(.*)', job_details).group(1)
         except:
             print(job_data["id"], " has no industries")
-
-    @staticmethod
-    def get_one_job_url(job_id):
-
-        job_url = LINKEDIN_URL + "/jobs/view/" + job_id
-
-        return job_url
-
-    @staticmethod
-    def get_days(name):
-
-        switcher = {
-            "hours": float(name.split(" ")[0])/24,
-            "hour": float(name.split(" ")[0])/24,
-            "days": float(name.split(" ")[0]),
-            "day": float(name.split(" ")[0]),
-            "week": float(name.split(" ")[0])*7,
-            "weeks": float(name.split(" ")[0])*7,
-            "months": float(name.split(" ")[0])*30,
-            "month": float(name.split(" ")[0])*30
-            }
-
-        return switcher.get(name.split(" ")[1], "Invalid day of week")
-
-    def close_driver(self) -> None:
-
-        self.driver.close()
