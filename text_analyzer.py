@@ -21,7 +21,7 @@ class JobsWords():
 
     def get_clean_tokens(self):
 
-        clean_text = re.sub('[!#?¿,:";+.]', ' ', self.text)
+        clean_text = re.sub('[!#?¿,:";+.-]', ' ', self.text)
         clean_text = re.sub(r"([a-z])([A-Z])", r"\1 \2", clean_text)
         clean_text = clean_text.lower()
         tknzr = TweetTokenizer()

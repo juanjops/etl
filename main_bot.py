@@ -7,7 +7,8 @@ DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\"
 
 JOBS_LOCATIONS = [
     ["Madrid", "Community of Madrid", "Spain"],
-    ["Dublin", "Dublin", "Ireland"]]
+    ["Dublin", "Dublin", "Ireland"],
+    ["London", "England", "United Kingdom"]]
 
 DRIVER = "Chrome"
 

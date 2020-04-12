@@ -10,7 +10,8 @@ KEY_WORDS = [
     "python", "r", "qlik", "tableau", "powerbi", "scala", "impala", "spark", "hive", "mathlab"
     "kudu", "sql", "kafka", "neo", "initio", "hadoop", "apis", "aws", "java",
     "gcp", "cloud", "azure", "sqoop", "etl", "cloudera", "b2b", "b2c", "agile", "kpi", "crm",
-    "scrum", "tensorflow", "keras", "sklearn", "docker", "mining", "no-sql", "mongo"
+    "scrum", "tensorflow", "keras", "sklearn", "docker", "mining", "no-sql", "mongo", 
+    "dashboards", "analytics", "visualisations", "kpis", "kubernetes", "startups"
 ]
 
 LANGUAGES = ["en", "es"]

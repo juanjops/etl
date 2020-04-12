@@ -84,14 +84,14 @@ class Linkedinbot():
 
         return adapted_parameter
 
-    def scroll(self):
+    def scroll(self) -> None:
 
         last_height = self.driver.execute_script("return document.body.scrollHeight")
 
         while True:
 
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(uniform(3, 6))
+            Linkedinbot.sleep()
             try:
                 self.driver.find_element_by_xpath(
                     "//button[@aria-label='Load more results']").click()
