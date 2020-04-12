@@ -1,4 +1,3 @@
-import sys
 import time
 import re
 from random import uniform
@@ -40,9 +39,8 @@ class Linkedinbot():
         self.scroll()
         jobs_id = self.get_jobs_id()
         Linkedinbot.sleep()
-        jobs_data = self.get_jobid_texts(jobs_id)
+        jobs_data = self.get_jobid_texts(jobs_id, job_search_specifics)
         Linkedinbot.sleep()
-        self.driver.close()
 
         return jobs_data
 
@@ -112,22 +110,19 @@ class Linkedinbot():
         if len(repeated_elements) != 0:
             print("repeated_elements", repeated_elements)
 
-    def get_jobid_texts(self, jobs_id):
+    def get_jobid_texts(self, jobs_id, job_search_specifics):
 
-        jobs_data = []       
+        jobs_data = []
 
         jobs_card = WebDriverWait(self.driver, 5).until(
             EC.visibility_of_all_elements_located((
                 By.XPATH,
-                "//ul[@class='jobs-search__results-list']//a[@class='result-card__full-card-link']")))
+                ("//ul[@class='jobs-search__results-list']" +
+                 "//a[@class='result-card__full-card-link']"))))
 
-        print(len(jobs_card), len(jobs_id))
-
-        exit()
         if len(jobs_card) != len(jobs_id):
 
-            print("ids and cards not the same")
-            sys.exit()
+            print(job_search_specifics, "ids and cards not the same")
 
         for job_id, job_card in zip(jobs_id, jobs_card):
 
@@ -138,65 +133,74 @@ class Linkedinbot():
             src = self.driver.page_source.encode("utf-8")
             soup = BeautifulSoup(src, "lxml")
             try:
-                title = soup.find("h2", {"class":"topcard__title"}).getText()
-                job_data["title"] = title
-            except:
-                print(job_id, " has no title")
-            try:
-                company = soup.find("span", {"class":"topcard__flavor"}).getText()
-                job_data["company"] = company
-            except:
-                print(job_id, " has no company")
-            try:
-                location = soup.find("span", {"class":"topcard__flavor--bullet"}).getText()
-                job_data["location"] = location
-            except:
-                print(job_id, " has no location")
-            try:
-                posted = soup.find("span", {"class":"posted-time-ago__text"}).getText()
-                posted = re.search(
-                    '(.*)ago', posted).group(1)
-                job_data["posted"] = Linkedinbot.get_days(posted)
-            except:
-                print(job_id, " has no posted")
-            try:
-                applicants = soup.find("span", {"class":"num-applicants__caption"}).getText()
-                applicants = re.search(
-                    '(.*)applicants', applicants).group(1)
-                job_data["applicants"] = applicants
-            except:
-                job_data["applicants"] = "0"
-            try:
                 text = soup.find("div", {"class":"description__text"}).getText()
                 job_data["text"] = text
             except:
                 print(job_id, " has no text")
-            job_details = soup.find("ul", {"class":"job-criteria__list"}).getText()
-            job_details = re.sub(r"([a-z])([A-Z])", r"\1 \2", job_details)
-            try:
-                job_data["level"] = re.search(
-                    'level(.*)Employment type', job_details).group(1)
-            except:
-                print(job_id, " has no level")
-            try:
-                job_data["type"] = re.search(
-                    'Employment type(.*)Job function', job_details).group(1)
-            except:
-                print(job_id, " has no type")
-            try:
-                job_data["functions"] = re.search(
-                    'Job function(.*)Industries', job_details).group(1)
-            except:
-                print(job_id, " has no functions")
-            try:
-                job_data["industries"] = re.search(
-                    'Industries(.*)', job_details).group(1)
-            except:
-                print(job_id, " has no industries")
-
+            Linkedinbot.get_top_card_data(soup, job_data)
+            Linkedinbot.get_jobs_details_data(soup, job_data)
             jobs_data.append(job_data)
 
         return jobs_data
+
+    @staticmethod
+    def get_top_card_data(soup, job_data) ->None:
+
+        try:
+            title = soup.find("h2", {"class":"topcard__title"}).getText()
+            job_data["title"] = title
+        except:
+            print(job_data["id"], " has no title")
+        try:
+            company = soup.find("span", {"class":"topcard__flavor"}).getText()
+            job_data["company"] = company
+        except:
+            print(job_data["id"], " has no company")
+        try:
+            location = soup.find("span", {"class":"topcard__flavor--bullet"}).getText()
+            job_data["location"] = location
+        except:
+            print(job_data["id"], " has no location")
+        try:
+            posted = soup.find("span", {"class":"posted-time-ago__text"}).getText()
+            posted = re.search(
+                '(.*)ago', posted).group(1)
+            job_data["posted"] = Linkedinbot.get_days(posted)
+        except:
+            print(job_data["id"], " has no posted")
+        try:
+            applicants = soup.find("span", {"class":"num-applicants__caption"}).getText()
+            applicants = re.search(
+                '(.*)applicants', applicants).group(1)
+            job_data["applicants"] = applicants
+        except:
+            job_data["applicants"] = "0"
+
+    @staticmethod
+    def get_jobs_details_data(soup, job_data) ->None:
+
+        job_details = soup.find("ul", {"class":"job-criteria__list"}).getText()
+        job_details = re.sub(r"([a-z])([A-Z])", r"\1 \2", job_details)
+        try:
+            job_data["level"] = re.search(
+                'level(.*)Employment type', job_details).group(1)
+        except:
+            print(job_data["id"], " has no level")
+        try:
+            job_data["type"] = re.search(
+                'Employment type(.*)Job function', job_details).group(1)
+        except:
+            print(job_data["id"], " has no type")
+        try:
+            job_data["functions"] = re.search(
+                'Job function(.*)Industries', job_details).group(1)
+        except:
+            print(job_data["id"], " has no functions")
+        try:
+            job_data["industries"] = re.search(
+                'Industries(.*)', job_details).group(1)
+        except:
+            print(job_data["id"], " has no industries")
 
     @staticmethod
     def get_one_job_url(job_id):
@@ -220,3 +224,7 @@ class Linkedinbot():
             }
 
         return switcher.get(name.split(" ")[1], "Invalid day of week")
+
+    def close_driver(self) -> None:
+
+        self.driver.close()
