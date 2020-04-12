@@ -51,7 +51,6 @@ class Linkedinbot():
 
     def get_jobs_id(self):
 
-
         html_code = self.driver.page_source
         soup = BeautifulSoup(html_code, "lxml")
         jobs_id_html = soup.select("li[data-id]")
