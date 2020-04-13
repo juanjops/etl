@@ -5,18 +5,18 @@ import time
 from random import uniform
 
 
-USER = "xxxxxxxxxxx"
+USER = "juanjose.pardo.s@gmail.com"
 
-PASSWORD = "xxxxxxxxx"
+PASSWORD = "malekith1990"
 
 DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
 JOB_SEARCH_SPECS = {
-    "position": "data scientist",
-    "city": "London",
-    "region": "England",
-    "country": "United Kingdom",
-    "time_range": "Past 24 hours"
+    "position": "data science",
+    "city": "Madrid",
+    "region": "Community of Madrid",
+    "country": "Spain",
+    "time_range": "Any Time"
 }
 
 DRIVER = "Chrome"
