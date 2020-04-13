@@ -4,16 +4,16 @@ import os
 from text_analyzer import JobsWords
 
 
-DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl"
+DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl_consolidated\\"
 
-DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analyzed"
+DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analyzed\\"
 
 KEY_WORDS = [
     "python", "r", "qlik", "tableau", "powerbi", "scala", "impala", "spark", "hive", "mathlab"
     "kudu", "sql", "kafka", "neo", "initio", "hadoop", "apis", "aws", "java",
     "gcp", "cloud", "azure", "sqoop", "etl", "cloudera", "b2b", "b2c", "agile", "kpi", "crm",
     "scrum", "tensorflow", "keras", "sklearn", "docker", "mining", "no-sql", "mongo", 
-    "dashboards", "analytics", "visualisations", "kpis", "kubernetes", "startups"
+    "dashboards", "analytics", "visualisations", "kpis", "kubernetes", "startups", "kotlin"
 ]
 
 LANGUAGES = ["en", "es"]
