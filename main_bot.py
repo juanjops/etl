@@ -2,31 +2,26 @@ from datetime import datetime
 import csv
 from bot import BotJobsId, BotJobsData
 import time
+from random import uniform
 
 
 USER = "juanjose.pardo.s@gmail.com"
 
 PASSWORD = "malekith1990"
 
-DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\"
+DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
-JOBS_LOCATIONS = [
-    ["Dublin", "Dublin", "Ireland"]]
+JOB_SEARCH_SPECS = {
+    "position": "data scientist",
+    "city": "London",
+    "region": "England",
+    "country": "United Kingdom",
+    "time_range": "Past 24 hours"
+}
 
 DRIVER = "Chrome"
 
-
-def get_jobs_format_spec(job_location_specs):
-
-    job_locations_specs = {
-        "position": "data scientist",
-        "city": job_location_specs[0],
-        "region": job_location_specs[1],
-        "country": job_location_specs[2],
-        "time_range": "Past Week"
-    }
-
-    return job_locations_specs
+TIME_SLEEP_GAP = [60, 180]
 
 
 def get_csv_from_list_of_dicts(one_jobs_data, job_search_specs):
@@ -48,17 +43,13 @@ def get_csv_from_list_of_dicts(one_jobs_data, job_search_specs):
 
 if __name__ == "__main__":
 
-    for job_specs in JOBS_LOCATIONS:
+    BOT_JOBS_ID = BotJobsId(DRIVER, USER, PASSWORD)
+    jobs_id = BOT_JOBS_ID.get_jobs_id(JOB_SEARCH_SPECS)
+    BOT_JOBS_ID.close_driver()
 
-        job_specs = get_jobs_format_spec(job_specs)
+    time.sleep(uniform(TIME_SLEEP_GAP[0], TIME_SLEEP_GAP[1]))
 
-        BOT_JOBS_ID = BotJobsId(DRIVER, USER, PASSWORD)
-        jobs_id = BOT_JOBS_ID.get_jobs_id(job_specs)
-        BOT_JOBS_ID.close_driver()
-
-        time.sleep(50)
-
-        BOT_JOBS_DATA = BotJobsData(DRIVER)
-        jobs_data = BOT_JOBS_DATA.get_jobs_data(jobs_id)
-        get_csv_from_list_of_dicts(jobs_data, job_specs)
-        BOT_JOBS_DATA.close_driver()
+    BOT_JOBS_DATA = BotJobsData(DRIVER)
+    jobs_data = BOT_JOBS_DATA.get_jobs_data(jobs_id)
+    get_csv_from_list_of_dicts(jobs_data, JOB_SEARCH_SPECS)
+    BOT_JOBS_DATA.close_driver()

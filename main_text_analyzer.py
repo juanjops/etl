@@ -4,7 +4,9 @@ import os
 from text_analyzer import JobsWords
 
 
-DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\"
+DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl"
+
+DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analyzed"
 
 KEY_WORDS = [
     "python", "r", "qlik", "tableau", "powerbi", "scala", "impala", "spark", "hive", "mathlab"
@@ -19,7 +21,7 @@ LANGUAGES = ["en", "es"]
 
 def get_csvs_to_analyze():
 
-    all_files = os.listdir(DATA_BASE_ROUTE)
+    all_files = os.listdir(DATA_BASE_ETL_ROUTE)
     today = datetime.today().strftime("%Y-%m-%d")
     files = [
         file for file in all_files if (
@@ -32,7 +34,7 @@ def get_csvs_to_analyze():
 def get_jobs_data(file_name):
 
     file_data = []
-    with open(DATA_BASE_ROUTE + file_name, encoding='utf-8') as file_to_read:
+    with open(DATA_BASE_ETL_ROUTE + file_name, encoding='utf-8') as file_to_read:
         read_file = csv.DictReader(file_to_read, delimiter=',')
         for row in read_file:
             file_data.append(dict(row))
@@ -57,7 +59,7 @@ def get_text_analyzed(jobs_data, key_words, languages) -> None:
 
 def get_csv_from_list_of_dicts(one_jobs_data, file_name):
 
-    file_csv = DATA_BASE_ROUTE + "text_analyze_" + file_name
+    file_csv = DATA_BASE_TEXT_ROUTE + "text_analyze_" + file_name
     csv_columns = one_jobs_data[0].keys()
 
     with open(file_csv, 'w', encoding='utf-8') as csvfile:

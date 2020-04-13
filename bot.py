@@ -23,10 +23,9 @@ LINKEDIN_URL = "https://www.linkedin.com"
 TIME_SLEEP_GAP_1 = [5, 10]
 TIME_SLEEP_GAP_2 = [1, 2]
 TIMES_PARAMETERS = {
-    "Past 24 hours": "f_TP=1",
-    "Past Week": "f_TP=1%2C2",
-    "Past Month": "f_TP=1%2C2%2C3%2C4",
-    "Any Time": ""}
+    "Past 24 hours": "r86400",
+    "Past Week": "r604800",
+    "Past Month": "r2592000"}
 
 
 class BotJobsId():
@@ -70,22 +69,23 @@ class BotJobsId():
 
         while page_number < 100:
             try:
-                page = WebDriverWait(self.driver, 5).until(
-                    EC.element_to_be_clickable((
-                        By.XPATH, f'//button[@aria-label="Page {page_number}"]')))
-                page.click()
+                if page_number > 1:
+                    page = WebDriverWait(self.driver, 5).until(
+                        EC.element_to_be_clickable((
+                            By.XPATH, f'//button[@aria-label="Page {page_number}"]')))
+                    page.click()
+                self.scroll_job_list()
+                html_code = self.driver.page_source
+                soup = BeautifulSoup(html_code, "lxml")
+                jobs_id_page_html = soup.select("div[data-job-id]")
+                jobs_id_page = [
+                    job_id["data-job-id"].split(":")[-1] for job_id in jobs_id_page_html]
+                jobs_id = jobs_id + jobs_id_page
+                self.check_repeated_elements(jobs_id)
+                page_number += 1
+                BotJobsId.sleep()
             except:
                 break
-            self.scroll_job_list()
-            html_code = self.driver.page_source
-            soup = BeautifulSoup(html_code, "lxml")
-            jobs_id_page_html = soup.select("div[data-job-id]")
-            jobs_id_page = [
-                job_id["data-job-id"].split(":")[-1] for job_id in jobs_id_page_html]
-            jobs_id = jobs_id + jobs_id_page
-            self.check_repeated_elements(jobs_id)
-            page_number += 1
-            BotJobsId.sleep()
 
         jobs_id_not_repeated = list(dict.fromkeys(jobs_id))
 
