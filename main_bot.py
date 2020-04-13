@@ -5,9 +5,9 @@ import time
 from bot import BotJobsId, BotJobsData
 
 
-USER = "juanjose.pardo.s@gmail.com"
+USER = "xxxxxxxxx"
 
-PASSWORD = "malekith1990"
+PASSWORD = "xxxxxxxx"
 
 DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
