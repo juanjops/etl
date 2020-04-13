@@ -5,9 +5,9 @@ import time
 from random import uniform
 
 
-USER = "juanjose.pardo.s@gmail.com"
+USER = "xxxxxxxxxxx"
 
-PASSWORD = "malekith1990"
+PASSWORD = "xxxxxxxxx"
 
 DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
