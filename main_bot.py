@@ -1,8 +1,8 @@
 from datetime import datetime
 import csv
-from bot import BotJobsId, BotJobsData
-import time
 from random import uniform
+import time
+from bot import BotJobsId, BotJobsData
 
 
 USER = "juanjose.pardo.s@gmail.com"
@@ -44,12 +44,12 @@ def get_csv_from_list_of_dicts(one_jobs_data, job_search_specs):
 if __name__ == "__main__":
 
     BOT_JOBS_ID = BotJobsId(DRIVER, USER, PASSWORD)
-    jobs_id = BOT_JOBS_ID.get_jobs_id(JOB_SEARCH_SPECS)
+    JOBS_ID = BOT_JOBS_ID.get_jobs_id(JOB_SEARCH_SPECS)
     BOT_JOBS_ID.close_driver()
 
     time.sleep(uniform(TIME_SLEEP_GAP[0], TIME_SLEEP_GAP[1]))
 
     BOT_JOBS_DATA = BotJobsData(DRIVER)
-    jobs_data = BOT_JOBS_DATA.get_jobs_data(jobs_id)
-    get_csv_from_list_of_dicts(jobs_data, JOB_SEARCH_SPECS)
+    JOBS_DATA = BOT_JOBS_DATA.get_jobs_data(JOBS_ID)
+    get_csv_from_list_of_dicts(JOBS_DATA, JOB_SEARCH_SPECS)
     BOT_JOBS_DATA.close_driver()

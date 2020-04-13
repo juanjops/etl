@@ -102,7 +102,7 @@ class BotJobsId():
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
                 "f_TPR=" + TIMES_PARAMETERS[job_search_specifics["time_range"]] +
                 "&keywords=" + BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
-                "&location=" + 
+                "&location=" +
                 BotJobsId.adapt_words(job_search_specifics["city"]) + "%2C%20" +
                 BotJobsId.adapt_words(job_search_specifics["region"]) + "%2C%20" +
                 BotJobsId.adapt_words(job_search_specifics["country"])
@@ -111,7 +111,7 @@ class BotJobsId():
             job_list_url = (
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
                 "&keywords=" + BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
-                "&location=" + 
+                "&location=" +
                 BotJobsId.adapt_words(job_search_specifics["city"]) + "%2C%20" +
                 BotJobsId.adapt_words(job_search_specifics["region"]) + "%2C%20" +
                 BotJobsId.adapt_words(job_search_specifics["country"])
