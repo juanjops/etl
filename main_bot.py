@@ -5,29 +5,27 @@ import time
 from bot import BotJobsId, BotJobsData
 
 
-USER = "xxxxxxxxx"
+USER = "juanjose.pardo.s@gmail.com"
 
-PASSWORD = "xxxxxxxx"
+PASSWORD = "malekith1990"
 
 DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
 JOB_SEARCH_SPECS = {
-    "position": "data science",
-    "city": "Madrid",
-    "region": "Community of Madrid",
-    "country": "Spain",
-    "time_range": "Any Time"
+    "key_words": "data science",
+    "location" : "london",
+    "time_range": "Past 24 hours"
 }
 
 DRIVER = "Chrome"
 
-TIME_SLEEP_GAP = [60, 180]
+TIME_SLEEP_GAP = [120, 240]
 
 
 def get_csv_from_list_of_dicts(one_jobs_data, job_search_specs):
 
     file_csv = "_".join([
-        job_search_specs["position"], job_search_specs["city"],
+        job_search_specs["position"], job_search_specs["location"],
         job_search_specs["time_range"]])
     file_csv = file_csv.replace(" ", "_")
     performance_day = datetime.now().strftime("%Y-%m-%d")

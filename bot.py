@@ -1,5 +1,5 @@
 import time
-from random import uniform, shuffle
+from random import uniform, shuffle, seed
 import re
 import collections
 from webdriver_manager.chrome import ChromeDriverManager
@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
+seed(version=2)
 CHROME_OPTIONS = webdriver.ChromeOptions()
 CHROME_OPTIONS.add_argument("--incognito")
 CHROME_OPTIONS.add_argument("--lang=en")
@@ -20,7 +21,7 @@ DRIVER_2 = {"Chrome": webdriver.Chrome(
     chrome_options=CHROME_OPTIONS,
     executable_path=ChromeDriverManager().install())}
 LINKEDIN_URL = "https://www.linkedin.com"
-TIME_SLEEP_GAP_1 = [3, 6]
+TIME_SLEEP_GAP_1 = [5, 8]
 TIME_SLEEP_GAP_2 = [1, 2]
 TIMES_PARAMETERS = {
     "Past 24 hours": "r86400",
@@ -79,14 +80,12 @@ class BotJobsId():
                 html_code = self.driver.page_source
                 soup = BeautifulSoup(html_code, "lxml")
                 jobs_id_page_html = soup.select("div[data-job-id]")
-                print(len(jobs_id_page_html))
                 jobs_id_page = [
                     job_id["data-job-id"].split(":")[-1] for job_id in jobs_id_page_html]
                 jobs_id = jobs_id + jobs_id_page
                 BotJobsId.sleep()
                 self.check_repeated_elements(jobs_id)
                 page_number += 1
-
             except:
                 break
 
@@ -101,20 +100,18 @@ class BotJobsId():
             job_list_url = (
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
                 "f_TPR=" + TIMES_PARAMETERS[job_search_specifics["time_range"]] +
-                "&keywords=" + BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
+                "&keywords=" + 
+                BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
                 "&location=" +
-                BotJobsId.adapt_words(job_search_specifics["city"]) + "%2C%20" +
-                BotJobsId.adapt_words(job_search_specifics["region"]) + "%2C%20" +
-                BotJobsId.adapt_words(job_search_specifics["country"])
+                BotJobsId.adapt_words(job_search_specifics["location"])
             )
         else:
             job_list_url = (
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
-                "&keywords=" + BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
+                "&keywords=" + 
+                BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
                 "&location=" +
-                BotJobsId.adapt_words(job_search_specifics["city"]) + "%2C%20" +
-                BotJobsId.adapt_words(job_search_specifics["region"]) + "%2C%20" +
-                BotJobsId.adapt_words(job_search_specifics["country"])
+                BotJobsId.adapt_words(job_search_specifics["location"])
             )
 
         return job_list_url
@@ -129,11 +126,11 @@ class BotJobsId():
     def scroll_job_list(self) -> None:
 
         jobs_list = self.driver.find_element_by_class_name("jobs-search-results")
-        half_stopped = uniform(0, 300)
+        half_stopped = int(uniform(0, 350))
         for piece in range(0, half_stopped):
             self.driver.execute_script(f"arguments[0].scrollTo(0, {10 * piece})", jobs_list)
         BotJobsId.sleep()
-        for piece in range(half_stopped, 300):
+        for piece in range(half_stopped, 350):
             self.driver.execute_script(f"arguments[0].scrollTo(0, {10 * piece})", jobs_list)
 
     def close_driver(self) -> None:

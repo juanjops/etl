@@ -3,6 +3,7 @@ import csv
 import os
 from text_analyzer import JobsWords
 
+FILE = "data_science_London_Past_24_hours_2020-04-14.csv"
 
 DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl_consolidated\\"
 
@@ -10,25 +11,13 @@ DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analy
 
 KEY_WORDS = [
     "python", "r", "qlik", "tableau", "powerbi", "scala", "impala", "spark", "hive", "mathlab"
-    "kudu", "sql", "kafka", "neo", "initio", "hadoop", "apis", "aws", "java",
+    "kudu", "sql", "kafka", "neo", "initio", "hadoop", "apis", "aws", "java", "ai",
     "gcp", "cloud", "azure", "sqoop", "etl", "cloudera", "b2b", "b2c", "agile", "kpi", "crm",
     "scrum", "tensorflow", "keras", "sklearn", "docker", "mining", "no-sql", "mongo", 
     "dashboards", "analytics", "visualisations", "kpis", "kubernetes", "startups", "kotlin"
 ]
 
 LANGUAGES = ["en", "es"]
-
-
-def get_csvs_to_analyze():
-
-    all_files = os.listdir(DATA_BASE_ETL_ROUTE)
-    today = datetime.today().strftime("%Y-%m-%d")
-    files = [
-        file for file in all_files if (
-            (file.split("_")[-1].split(".")[0] == today) &
-            (file.split("_")[0] != "text"))]
-
-    return files
 
 
 def get_jobs_data(file_name):
@@ -71,12 +60,8 @@ def get_csv_from_list_of_dicts(one_jobs_data, file_name):
 
 if __name__ == "__main__":
 
-    FILES = get_csvs_to_analyze()
+    JOBS_DATA = get_jobs_data(FILE)
 
-    for file in FILES:
+    JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS, LANGUAGES)
 
-        JOBS_DATA = get_jobs_data(file)
-
-        JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS, LANGUAGES)
-
-        get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, file)
+    get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, FILE)
