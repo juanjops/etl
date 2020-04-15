@@ -13,8 +13,8 @@ DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
 JOB_SEARCH_SPECS = {
     "key_words": "data science",
-    "location" : "london",
-    "time_range": "Past 24 hours"
+    "location" : "Australia",
+    "time_range": "Any Time"
 }
 
 DRIVER = "Chrome"
@@ -25,7 +25,7 @@ TIME_SLEEP_GAP = [120, 240]
 def get_csv_from_list_of_dicts(one_jobs_data, job_search_specs):
 
     file_csv = "_".join([
-        job_search_specs["position"], job_search_specs["location"],
+        job_search_specs["key_words"], job_search_specs["location"],
         job_search_specs["time_range"]])
     file_csv = file_csv.replace(" ", "_")
     performance_day = datetime.now().strftime("%Y-%m-%d")
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     BOT_JOBS_ID = BotJobsId(DRIVER, USER, PASSWORD)
     JOBS_ID = BOT_JOBS_ID.get_jobs_id(JOB_SEARCH_SPECS)
-    BOT_JOBS_ID.close_driver()
+    # BOT_JOBS_ID.close_driver()
 
     time.sleep(uniform(TIME_SLEEP_GAP[0], TIME_SLEEP_GAP[1]))
 

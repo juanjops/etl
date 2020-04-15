@@ -65,10 +65,15 @@ class BotJobsId():
         jobs_url = BotJobsId.get_jobs_url(job_search_specifics)
         self.driver.get(jobs_url)
         BotJobsId.sleep()
+
+        pages = self.driver.find_elements_by_xpath(
+            '//section[@class="jobs-search-two-pane__pagination"]//button[@aria-label]')
+        last_page = int(pages[-1].get_attribute("aria-label").split(" ")[1])
+
         jobs_id = []
         page_number = 1
 
-        while page_number < 100:
+        while page_number < 41:
             try:
                 page = WebDriverWait(self.driver, 5).until(
                     EC.element_to_be_clickable((
@@ -87,7 +92,11 @@ class BotJobsId():
                 self.check_repeated_elements(jobs_id)
                 page_number += 1
             except:
-                break
+                if page_number == (last_page -1):
+                    break
+                else:
+                    page_number -= 1
+                    self.driver.refresh()
 
         jobs_id_not_repeated = list(dict.fromkeys(jobs_id))
 
@@ -101,7 +110,7 @@ class BotJobsId():
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
                 "f_TPR=" + TIMES_PARAMETERS[job_search_specifics["time_range"]] +
                 "&keywords=" + 
-                BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
+                BotJobsId.adapt_words(job_search_specifics["key_words"]) + "%2C%20"
                 "&location=" +
                 BotJobsId.adapt_words(job_search_specifics["location"])
             )
@@ -109,7 +118,7 @@ class BotJobsId():
             job_list_url = (
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
                 "&keywords=" + 
-                BotJobsId.adapt_words(job_search_specifics["position"]) + "%2C%20"
+                BotJobsId.adapt_words(job_search_specifics["key_words"]) + "%2C%20"
                 "&location=" +
                 BotJobsId.adapt_words(job_search_specifics["location"])
             )
@@ -126,11 +135,11 @@ class BotJobsId():
     def scroll_job_list(self) -> None:
 
         jobs_list = self.driver.find_element_by_class_name("jobs-search-results")
-        half_stopped = int(uniform(0, 350))
+        half_stopped = int(uniform(0, 300))
         for piece in range(0, half_stopped):
             self.driver.execute_script(f"arguments[0].scrollTo(0, {10 * piece})", jobs_list)
         BotJobsId.sleep()
-        for piece in range(half_stopped, 350):
+        for piece in range(half_stopped, 300):
             self.driver.execute_script(f"arguments[0].scrollTo(0, {10 * piece})", jobs_list)
 
     def close_driver(self) -> None:
