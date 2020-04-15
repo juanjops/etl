@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     BOT_JOBS_ID = BotJobsId(DRIVER, USER, PASSWORD)
     JOBS_ID = BOT_JOBS_ID.get_jobs_id(JOB_SEARCH_SPECS)
-    # BOT_JOBS_ID.close_driver()
+    BOT_JOBS_ID.close_driver()
 
     time.sleep(uniform(TIME_SLEEP_GAP[0], TIME_SLEEP_GAP[1]))
 

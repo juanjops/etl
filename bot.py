@@ -77,7 +77,7 @@ class BotJobsId():
             try:
                 page = WebDriverWait(self.driver, 5).until(
                     EC.element_to_be_clickable((
-                        By.XPATH, f'//button[@aria-label="Page {page_number}"]')))
+                        By.XPATH, f"//button[@aria-label='Page {page_number}']")))
                 page.click()
                 BotJobsId.sleep()
                 self.scroll_job_list()
@@ -92,11 +92,11 @@ class BotJobsId():
                 self.check_repeated_elements(jobs_id)
                 page_number += 1
             except:
-                if page_number == (last_page -1):
+                if page_number == (last_page + 1):
                     break
-                else:
-                    page_number -= 1
-                    self.driver.refresh()
+                page_number -= 1
+                jobs_url = jobs_url + "&start=" + str(25*page_number)
+                self.driver.get(jobs_url)
 
         jobs_id_not_repeated = list(dict.fromkeys(jobs_id))
 
@@ -109,7 +109,7 @@ class BotJobsId():
             job_list_url = (
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
                 "f_TPR=" + TIMES_PARAMETERS[job_search_specifics["time_range"]] +
-                "&keywords=" + 
+                "&keywords=" +
                 BotJobsId.adapt_words(job_search_specifics["key_words"]) + "%2C%20"
                 "&location=" +
                 BotJobsId.adapt_words(job_search_specifics["location"])
@@ -117,7 +117,7 @@ class BotJobsId():
         else:
             job_list_url = (
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
-                "&keywords=" + 
+                "&keywords=" +
                 BotJobsId.adapt_words(job_search_specifics["key_words"]) + "%2C%20"
                 "&location=" +
                 BotJobsId.adapt_words(job_search_specifics["location"])
