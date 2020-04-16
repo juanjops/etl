@@ -32,8 +32,9 @@ class JobsWords():
 
     def get_reg(self):
 
-        clean_text = re.sub('[)!#?¿,:";+.-/(]', ' ', self.text)
-        clean_text = re.sub(r"([a-z])([A-Z])", r"\1 \2", clean_text)
+        clean_text = re.sub('[)!#?¿,:";+.-/(•]', ' ', self.text)
+        clean_text = re.sub(r"([a-z])([A-Z]|[0-9])", r"\1 \2", clean_text)
+        clean_text = re.sub(r"([0-9])([A-Z]|[a-z])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([A-Z])([A-Z])([a-z])", r"\1 \2\3", clean_text)
         clean_text = clean_text.lower()
 
@@ -42,7 +43,7 @@ class JobsWords():
     def get_tokens(self, clean_text):
 
         nlp = LANGUAGES[self.language]
-        tokens = [token.text for token in nlp(clean_text)]
+        tokens = [token.lemma_ for token in nlp(clean_text)]
 
         return tokens
 

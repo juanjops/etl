@@ -9,25 +9,26 @@ from os.path import isfile, join
 DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl_consolidated\\"
 DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analyzed\\"
 
-FILE = "data_science_London_Past_24_hours_2020-04-15.csv"
-# files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]
+# FILE = "data_science_London_Past_24_hours_2020-04-15.csv"
+files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]
 
 KEY_WORDS_PARTS = {
     "languages": [
-        "python", "r", "scala", "matlab", "java", "kotlin", "javascript", "node"],
+        "python", "r", "scala", "matlab", "java", "kotlin", "javascript", "node",
+        "clojure"],
     "data_base": [
         "impala", "spark", "hive", "kudu", "sql", "no sql", "kafka", "hadoop",
-        "sqoop", "mongo"],
+        "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs"],
     "bi": [
         "qlik", "tableau", "powerbi", "qlikview", "qliksense"],
     "blockchain": [
         "neo"],
     "companies": [
-        "ab initio", "cloudera", "google", "databricks", "knime"],
+        "ab initio", "cloudera", "google", "databricks", "knime", "qubole"],
     "data_parts": [
         "apis", "api", "etl", "etls", "b2b", "agile", "kpi", "kpis", "crm",
         "scrum", "mining", "dashboards", "analytics", "visualisations", "startups",
-        "bi", "backend", "frontend", "virtualizations"],
+        "bi", "backend", "frontend", "virtualizations", "micromanagement"],
     "cloud": [
         "aws", "gcp", "cloud", "azure"],
     "machine_learning": [
@@ -88,16 +89,16 @@ def get_csv_from_list_of_dicts(one_jobs_data, file_name):
 
 if __name__ == "__main__":
 
-    JOBS_DATA = get_jobs_data(FILE)
+    # JOBS_DATA = get_jobs_data(FILE)
 
-    JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
+    # JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
 
-    get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, FILE)
+    # get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, FILE)
 
-    # for file in files:
+    for file in files:
 
-    #     JOBS_DATA = get_jobs_data(file)
+        JOBS_DATA = get_jobs_data(file)
 
-    #     JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
+        JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
 
-    #     get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, file)
+        get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, file)
