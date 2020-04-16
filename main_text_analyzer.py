@@ -18,17 +18,17 @@ KEY_WORDS_PARTS = {
         "clojure"],
     "data_base": [
         "impala", "spark", "hive", "kudu", "sql", "no sql", "kafka", "hadoop",
-        "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs"],
+        "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs", "postgresql", "elasticsearch"],
     "bi": [
-        "qlik", "tableau", "powerbi", "qlikview", "qliksense"],
+        "qlik", "tableau", "powerbi", "qlikview", "qliksense", "kibana"],
     "blockchain": [
-        "neo"],
+        "neo", "blockchain"],
     "companies": [
         "ab initio", "cloudera", "google", "databricks", "knime", "qubole"],
     "data_parts": [
         "apis", "api", "etl", "etls", "b2b", "agile", "kpi", "kpis", "crm",
         "scrum", "mining", "dashboards", "analytics", "visualisations", "startups",
-        "bi", "backend", "frontend", "virtualizations", "micromanagement"],
+        "bi", "backend", "frontend", "virtualizations", "micromanagement", "mathematic"],
     "cloud": [
         "aws", "gcp", "cloud", "azure"],
     "machine_learning": [
