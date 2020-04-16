@@ -56,7 +56,7 @@ class BotJobsId():
         password.submit()
 
     @staticmethod
-    def sleep() -> None:
+    def sleep():
 
         time.sleep(uniform(TIME_SLEEP_GAP_1[0], TIME_SLEEP_GAP_1[1]))
 
@@ -132,7 +132,7 @@ class BotJobsId():
 
         return adapted_parameter
 
-    def scroll_job_list(self) -> None:
+    def scroll_job_list(self):
 
         jobs_list = self.driver.find_element_by_class_name("jobs-search-results")
         half_stopped = int(uniform(0, 300))
@@ -142,12 +142,12 @@ class BotJobsId():
         for piece in range(half_stopped, 300):
             self.driver.execute_script(f"arguments[0].scrollTo(0, {10 * piece})", jobs_list)
 
-    def close_driver(self) -> None:
+    def close_driver(self):
 
         self.driver.close()
 
     @staticmethod
-    def check_repeated_elements(jobs_to_check) -> None:
+    def check_repeated_elements(jobs_to_check):
 
         repeated_elements = [
             job for job, count in collections.Counter(jobs_to_check).items() if count > 1]
@@ -195,7 +195,7 @@ class BotJobsData():
         return job_url
 
     @staticmethod
-    def get_top_card_data(soup, job_data) ->None:
+    def get_top_card_data(soup, job_data):
 
         try:
             title = soup.find("h1", {"class":"topcard__title"}).getText()
@@ -229,7 +229,7 @@ class BotJobsData():
 
 
     @staticmethod
-    def get_jobs_details_data(soup, job_data) ->None:
+    def get_jobs_details_data(soup, job_data):
 
         job_details = soup.find("ul", {"class":"job-criteria__list"}).getText()
         job_details = re.sub(r"([a-z])([A-Z])", r"\1 \2", job_details)
@@ -270,11 +270,11 @@ class BotJobsData():
 
         return switcher.get(name.split(" ")[1], "Invalid day of week")
 
-    def close_driver(self) -> None:
+    def close_driver(self):
 
         self.driver.close()
 
     @staticmethod
-    def sleep() -> None:
+    def sleep():
 
         time.sleep(uniform(TIME_SLEEP_GAP_2[0], TIME_SLEEP_GAP_2[1]))

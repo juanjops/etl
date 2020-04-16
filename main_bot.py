@@ -13,8 +13,8 @@ DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
 JOB_SEARCH_SPECS = {
     "key_words": "data science",
-    "location" : "Australia",
-    "time_range": "Any Time"
+    "location" : "London",
+    "time_range": "Past 24 hours"
 }
 
 DRIVER = "Chrome"

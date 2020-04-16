@@ -2,22 +2,50 @@ from datetime import datetime
 import csv
 import os
 from text_analyzer import JobsWords
+from os import listdir
+from os.path import isfile, join
 
-FILE = "data_science_London_Past_24_hours_2020-04-14.csv"
 
 DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl_consolidated\\"
-
 DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analyzed\\"
 
-KEY_WORDS = [
-    "python", "r", "qlik", "tableau", "powerbi", "scala", "impala", "spark", "hive", "mathlab"
-    "kudu", "sql", "kafka", "neo", "initio", "hadoop", "apis", "aws", "java", "ai",
-    "gcp", "cloud", "azure", "sqoop", "etl", "cloudera", "b2b", "b2c", "agile", "kpi", "crm",
-    "scrum", "tensorflow", "keras", "sklearn", "docker", "mining", "no-sql", "mongo", 
-    "dashboards", "analytics", "visualisations", "kpis", "kubernetes", "startups", "kotlin"
-]
+FILE = "data_science_London_Past_24_hours_2020-04-15.csv"
+# files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]
 
-LANGUAGES = ["en", "es"]
+KEY_WORDS_PARTS = {
+    "languages": [
+        "python", "r", "scala", "matlab", "java", "kotlin", "javascript", "node"],
+    "data_base": [
+        "impala", "spark", "hive", "kudu", "sql", "no sql", "kafka", "hadoop",
+        "sqoop", "mongo"],
+    "bi": [
+        "qlik", "tableau", "powerbi", "qlikview", "qliksense"],
+    "blockchain": [
+        "neo"],
+    "companies": [
+        "ab initio", "cloudera", "google", "databricks", "knime"],
+    "data_parts": [
+        "apis", "api", "etl", "etls", "b2b", "agile", "kpi", "kpis", "crm",
+        "scrum", "mining", "dashboards", "analytics", "visualisations", "startups",
+        "bi", "backend", "frontend", "virtualizations"],
+    "cloud": [
+        "aws", "gcp", "cloud", "azure"],
+    "machine_learning": [
+        "ai", "nlp", "machine learning", "ml"],
+    "libraries": [
+        "tensorflow", "keras", "sklearn", "redux"],
+    "microservices": [
+        "docker", "kubernetes", "ansible", "jenkins"
+    ],
+    "operative_system": [
+        "linux", "windows"
+    ],
+    "development": [
+        "gitlab", "github", "jira", "confluence", "angular"
+    ]
+}
+
+KEY_WORDS = sum(KEY_WORDS_PARTS.values(), [])
 
 
 def get_jobs_data(file_name):
@@ -31,17 +59,17 @@ def get_jobs_data(file_name):
     return file_data
 
 
-def get_text_analyzed(jobs_data, key_words, languages) -> None:
+def get_text_analyzed(jobs_data, key_words):
 
     for job in jobs_data:
 
         try:
-            jobs_token_text = JobsWords(job["text"], key_words, languages)
+            jobs_token_text = JobsWords(job["text"], key_words)
             job["key_words"], job["misspelled_words"] = \
                  jobs_token_text.get_key_misspelled_words()
-            del job["text"]
         except:
             print(job["id"], " no text analyzed")
+        del job["text"]
 
     return jobs_data
 
@@ -62,6 +90,14 @@ if __name__ == "__main__":
 
     JOBS_DATA = get_jobs_data(FILE)
 
-    JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS, LANGUAGES)
+    JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
 
     get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, FILE)
+
+    # for file in files:
+
+    #     JOBS_DATA = get_jobs_data(file)
+
+    #     JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
+
+    #     get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, file)
