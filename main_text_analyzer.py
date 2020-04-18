@@ -6,10 +6,10 @@ from os import listdir
 from os.path import isfile, join
 
 
-DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl_consolidated\\"
+DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analyzed\\"
 
-# FILE = "data_science_London_Past_24_hours_2020-04-15.csv"
+# FILE = "data_science_New_Zealand_Any_Time_2020-04-17.csv"
 files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]
 
 KEY_WORDS_PARTS = {
@@ -18,7 +18,8 @@ KEY_WORDS_PARTS = {
         "clojure"],
     "data_base": [
         "impala", "spark", "hive", "kudu", "sql", "no sql", "kafka", "hadoop",
-        "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs", "postgresql", "elasticsearch"],
+        "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs", "postgresql", "elasticsearch",
+        "postgre", "pyspark", "lucene", "redis", "kinesis"],
     "bi": [
         "qlik", "tableau", "powerbi", "qlikview", "qliksense", "kibana"],
     "blockchain": [
@@ -26,23 +27,23 @@ KEY_WORDS_PARTS = {
     "companies": [
         "ab initio", "cloudera", "google", "databricks", "knime", "qubole"],
     "data_parts": [
-        "apis", "api", "etl", "etls", "b2b", "agile", "kpi", "kpis", "crm",
-        "scrum", "mining", "dashboards", "analytics", "visualisations", "startups",
-        "bi", "backend", "frontend", "virtualizations", "micromanagement", "mathematic"],
+        " api", "etl", "b2b", "agile", "kpi", "crm", "scrum", "mining", "dashboard",
+        "visualisation", "startup", " bi", "backend", "frontend",
+        "virtualization", "micromanagement", "mathematic", "microservice"],
     "cloud": [
         "aws", "gcp", "cloud", "azure"],
     "machine_learning": [
-        "ai", "nlp", "machine learning", "ml"],
+        "ai", "nlp"],
     "libraries": [
-        "tensorflow", "keras", "sklearn", "redux"],
+        "tensorflow", "keras", "sklearn", "redux", "pytorch", "jupyter"],
     "microservices": [
-        "docker", "kubernetes", "ansible", "jenkins"
+        "docker", "kubernetes", "ansible", "jenkins", "kubeflow", "sagemaker"
     ],
     "operative_system": [
         "linux", "windows"
     ],
     "development": [
-        "gitlab", "github", "jira", "confluence", "angular"
+        "gitlab", "github", "jira", "confluence", "angular", "bitbucket"
     ]
 }
 
@@ -66,11 +67,10 @@ def get_text_analyzed(jobs_data, key_words):
 
         try:
             jobs_token_text = JobsWords(job["text"], key_words)
-            job["key_words"], job["misspelled_words"] = \
+            job["key_words"], job["misspelled_words"], job["Experience"] = \
                  jobs_token_text.get_key_misspelled_words()
         except:
             print(job["id"], " no text analyzed")
-        del job["text"]
 
     return jobs_data
 

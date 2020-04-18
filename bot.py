@@ -95,8 +95,8 @@ class BotJobsId():
                 if page_number == (last_page + 1):
                     break
                 page_number -= 1
-                jobs_url = jobs_url + "&start=" + str(25*page_number)
-                self.driver.get(jobs_url)
+                jobs_url_page = jobs_url + "&start=" + str(25*page_number)
+                self.driver.get(jobs_url_page)
 
         jobs_id_not_repeated = list(dict.fromkeys(jobs_id))
 

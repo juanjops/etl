@@ -12,9 +12,9 @@ PASSWORD = "malekith1990"
 DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 
 JOB_SEARCH_SPECS = {
-    "key_words": "data science",
-    "location" : "London",
-    "time_range": "Past 24 hours"
+    "key_words": "marketing",
+    "location" : "New Zealand",
+    "time_range": "Past Week"
 }
 
 DRIVER = "Chrome"
