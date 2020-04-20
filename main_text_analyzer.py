@@ -10,7 +10,14 @@ DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\etl\\"
 DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\database_linkedin\\text_analyzed\\"
 
 # FILE = "data_science_New_Zealand_Any_Time_2020-04-17.csv"
-files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]
+all_files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]
+files_already_analyzed = [
+    file.split("text_analyze_",1)[1] for file in listdir(DATA_BASE_TEXT_ROUTE)
+    if isfile(join(DATA_BASE_TEXT_ROUTE, file))]
+new_files = [
+    file for file in listdir(DATA_BASE_ETL_ROUTE)
+    if isfile(join(DATA_BASE_ETL_ROUTE, file)) and 
+    (file not in files_already_analyzed)]
 
 KEY_WORDS_PARTS = {
     "languages": [
@@ -95,7 +102,7 @@ if __name__ == "__main__":
 
     # get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, FILE)
 
-    for file in files:
+    for file in new_files:
 
         JOBS_DATA = get_jobs_data(file)
 

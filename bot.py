@@ -75,6 +75,7 @@ class BotJobsId():
 
         while page_number < 41:
             try:
+                print(page_number)
                 page = WebDriverWait(self.driver, 5).until(
                     EC.element_to_be_clickable((
                         By.XPATH, f"//button[@aria-label='Page {page_number}']")))
@@ -95,6 +96,7 @@ class BotJobsId():
                 if page_number == (last_page + 1):
                     break
                 page_number -= 1
+                print(page_number)
                 jobs_url_page = jobs_url + "&start=" + str(25*page_number)
                 self.driver.get(jobs_url_page)
 
