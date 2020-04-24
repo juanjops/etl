@@ -6,8 +6,8 @@ from os import listdir
 from os.path import isfile, join
 
 
-DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database_linkedin\\etl\\"
-DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database_linkedin\\text_analyzed\\"
+DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database\\etl\\"
+DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database\\text_analyzed\\"
 
 # FILE = "data_science_New_Zealand_Any_Time_2020-04-17.csv"
 all_files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]

@@ -9,7 +9,7 @@ USER = "juanjose.pardo.s@gmail.com"
 
 PASSWORD = "malekith1990"
 
-DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database_linkedin\\etl\\"
+DATA_BASE_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database\\etl\\"
 
 JOB_SEARCH_SPECS = {
     "key_words": "data science",
