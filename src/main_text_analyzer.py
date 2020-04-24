@@ -1,4 +1,3 @@
-# l
 from datetime import datetime
 import csv
 import os
