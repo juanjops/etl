@@ -11,3 +11,6 @@ Due to this reason, a maximum of 1000 jobs can be extracted based on linekedin s
 time. 
 
 The total amount of time 0.0375*number_of_jobs + 1.5  (minutes)
+
+Command to activate mongo /c/Users/Sectorea/mongodb/bin/mongod.exe --dbpath=/c/Users/Sectorea/mongodb-data/
+
