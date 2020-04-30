@@ -7,12 +7,7 @@ const Linkedin = mongoose.model("linkedin", {
     jobid: {
         type: String,
         required : true,
-        trim: true,
-        validate(value) {
-            if (!validator.isInt(value)) {
-                throw new Error ("job id must be a integer")
-            }
-        }
+        trim: true
     },
     title: {
         type: String
