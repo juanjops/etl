@@ -8,29 +8,18 @@ const getJobsContent = async (job_id) => {
 
     try {
         const res_job = await axios.get(jobs_url + job_id)
+        
         const $ = cheerio.load(res_job.data)
         const title = $(".topcard__title").text()
-        const topcard_data = []
-        $(".topcard__flavor-row span").map((i,e) => {
-            topcard_data.push($(e).text())
-        })
+        const company =  $($(".topcard__flavor-row span")[0]).text()
+        const location =  $($(".topcard__flavor-row span")[1]).text()
+        const posted =  $($(".topcard__flavor-row span")[2]).text()
         const applicants = $(".num-applicants__caption").text()
         const text = $(".description__text").text()
-        $(".job-criteria__list span").map((i,e) => {
-            topcard_data.push($(e).text())
-        })
-        const rest_post = await axios.post(post_url, {
-            job_id,
-            title,
-            company: topcard_data[0],
-            location: topcard_data[1],
-            posted: topcard_data[2],
-            applicants,
-            text,
-            level: topcard_data[4],
-            type: topcard_data[5]
-        })
-        console.log(rest_post.data)
+        const level = $($(".job-criteria__list span")[1]).text()
+        const type = $($(".job-criteria__list span")[2]).text()
+
+        await axios.post(post_url, {job_id, title, company, location, posted, applicants, text, level, type})
 
     } catch (e) {
         console.log(e)

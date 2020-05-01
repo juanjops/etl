@@ -95,7 +95,7 @@ class BotJobsId():
             except:
                 if page_number == (last_page + 1):
                     break
-                page_number -= 1
+                page_number = page_number - 1
                 print(page_number)
                 jobs_url_page = jobs_url + "&start=" + str(25*page_number)
                 self.driver.get(jobs_url_page)
