@@ -1,7 +1,8 @@
 const express = require("express")
 require("./db/mongoose")
 const linkedinRouter = require("./routers/linkedin")
-const getJobsContent = require("./scraping/scraping")
+const getJobsId = require("./scraping/linkedin/jobs_id")
+const getJobContent = require("./scraping/linkedin/job_content")
 
 
 const app = express()
@@ -15,6 +16,15 @@ app.listen(port, () => {
     console.log("Server is up on port "  + port)
 })
 
-jobs_id = ["1806342384", "1793103579"]
+const main = async () => {
 
-jobs_id.map(job_id => getJobsContent(job_id))
+    try {
+        const jobs_id = await getJobsId()
+        jobs_id.map(job_id => getJobContent(job_id))
+    } catch (e) {
+        console.log(e)
+    }
+    
+}
+
+main()

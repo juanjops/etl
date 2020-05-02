@@ -4,9 +4,10 @@ const cheerio = require("cheerio")
 const post_url = "http://127.0.0.1:3000/linkedin"
 const jobs_url = "https://www.linkedin.com/jobs/view/"
 
-const getJobsContent = async (job_id) => {
+const getJobContent = async (job_id) => {
 
     try {
+        
         const res_job = await axios.get(jobs_url + job_id)
         
         const $ = cheerio.load(res_job.data)
@@ -27,4 +28,4 @@ const getJobsContent = async (job_id) => {
 
 }
 
-module.exports = getJobsContent
+module.exports = getJobContent
