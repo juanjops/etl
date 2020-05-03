@@ -1,14 +1,14 @@
 const axios = require("axios")
 const cheerio = require("cheerio")
+const C = require("../../constants.js")
 
-const post_url = "http://127.0.0.1:3000/linkedin"
-const jobs_url = "https://www.linkedin.com/jobs/view/"
+const post_url = `http://127.0.0.1:${C.SERVER_PORT}/linkedin`
 
 const getJobContent = async (job_id) => {
 
     try {
         
-        const res_job = await axios.get(jobs_url + job_id)
+        const res_job = await axios.get(C.LINKEDIN_URL + "/jobs/view/" + job_id)
         
         const $ = cheerio.load(res_job.data)
         const title = $(".topcard__title").text()

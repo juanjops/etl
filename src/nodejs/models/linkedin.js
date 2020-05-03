@@ -1,9 +1,6 @@
 const mongoose = require("mongoose")
 const validator = require("validator")
 
-
-// id,title,company,location,posted,applicants,text,level,type,functions,industries
-
 const Linkedin = mongoose.model("linkedin", {
 
     job_id: {

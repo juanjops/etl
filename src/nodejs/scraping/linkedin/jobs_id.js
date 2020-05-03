@@ -1,21 +1,36 @@
 const puppeteer = require("puppeteer")
 const cheerio = require("cheerio")
+const C = require("../../constants.js")
 
-const linkedin_url = "https://www.linkedin.com/login"
+const TIMES_PARAMETERS = {
+    "Past 24 hours": "r86400",
+    "Past Week": "r604800",
+    "Past Month": "r2592000"}
 
-const job_url = "https://www.linkedin.com/jobs/search/?f_TPR=r604800&geoId=104738515&keywords=data%20science&location=Ireland"
+const adapt_words = ((str) => {
+    return str.replace(/ /g, "%20")
+})
 
-const getJobsId = async () => {
+const getJobsId = async (job_search_specs) => {
 
     jobs_id = []
 
     try {
+
+        const job_url = (
+            C.LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
+            "f_TPR=" + TIMES_PARAMETERS[job_search_specs["time_range"]] +
+            "&keywords=" +
+            adapt_words(job_search_specs["key_words"]) + "%2C%20" +
+            "&location=" +
+            adapt_words(job_search_specs["location"])
+        )    
         const browser = await puppeteer.launch({headless: false})
         const page = await browser.newPage()
     
-        await page.goto(linkedin_url)
-        await page.type('#username', "juanjose.pardo.s@gmail.com")
-        await page.type('#password', "malekith1990")
+        await page.goto(C.LINKEDIN_URL + "/login")
+        await page.type('#username', C.USER)
+        await page.type('#password', C.PASSWORD)
         await page.click(".from__button--floating")
         await page.waitForNavigation()
         await page.goto(job_url)
