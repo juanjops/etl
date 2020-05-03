@@ -1,7 +1,7 @@
 const C = require("./constants.js")
 const express = require("express")
 require("./db/mongoose")
-const linkedinRouter = require("./routers/linkedin.js")
+const linkedinRouter = require("./routers/linkedin.")
 const linkedin_scraper = require("./scraping/linkedin.js")
 
 const app = express()
