@@ -1,7 +1,7 @@
 const C = require("./constants.js")
 const express = require("express")
 require("./db/mongoose")
-const linkedinRouter = require("./routers/linkedin.")
+const linkedinRouter = require("./routers/linkedin.js")
 const linkedin_scraper = require("./scraping/linkedin.js")
 
 const app = express()
@@ -17,8 +17,8 @@ app.listen(port, () => {
 
 const JOB_SEARCH_SPECS = {
     "key_words": "data science",
-    "location" : "Dublin",
-    "time_range": "Past Week"
+    "location" : "London",
+    "time_range": "Past 24 hours"
 }
 
 linkedin_scraper(JOB_SEARCH_SPECS)
