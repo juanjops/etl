@@ -3,6 +3,7 @@ const express = require("express")
 require("./db/mongoose")
 const linkedinRouter = require("./routers/linkedin.js")
 const linkedin_scraper = require("./scraping/linkedin.js")
+const insert_csv = require("./csv_to_mongo/csv_to_mongo.js")
 
 const app = express()
 const port = process.env.PORT || C.SERVER_PORT
@@ -21,4 +22,4 @@ const JOB_SEARCH_SPECS = {
     "time_range": "Past 24 hours"
 }
 
-linkedin_scraper(JOB_SEARCH_SPECS)
+// linkedin_scraper(JOB_SEARCH_SPECS)

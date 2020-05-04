@@ -7,8 +7,8 @@ const PASSWORD = "malekith1990"
 const LINKEDIN_URL = "https://www.linkedin.com"
 
 module.exports = {
-    SERVER_PORT: SERVER_PORT,
-    USER: USER,
-    PASSWORD: PASSWORD,
-    LINKEDIN_URL: LINKEDIN_URL
+    SERVER_PORT,
+    USER,
+    PASSWORD,
+    LINKEDIN_URL
 }

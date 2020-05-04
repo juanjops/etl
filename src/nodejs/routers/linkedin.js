@@ -1,5 +1,6 @@
 const express = require("express")
-const Linkedin = require("../models/linkedin")
+const Linkedin = require("../models/linkedin.js")
+const Play = require("../models/play.js")
 const router = new express.Router()
 
 
@@ -14,6 +15,16 @@ router.post("/linkedin", async (req, res) => {
 
 })
 
+router.post("/play", async (req, res) => {
+
+    try {
+        const job = await Play(req.body).save()
+        res.status(201).send(job)
+    } catch (e){
+        res.status(400).send(e)
+    }
+
+})
 
 router.get("/linkedin", async (req, res) => {
 
