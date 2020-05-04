@@ -15,7 +15,7 @@ const post_url = `http://127.0.0.1:${C.SERVER_PORT}/linkedin`
 const main = async (jobs_search_specs) => {
     try {
         const jobs_id = await getJobsId(jobs_search_specs)
-        console.log(jobs_id.length)
+        console.log("Jobs scraped: " + jobs_id.length.toString())
         jobs_id.map(job_id => getJobContent(job_id))
     } catch (e) {
         console.log(e)
@@ -57,6 +57,10 @@ const getJobsId = async (job_search_specs) => {
                 ((page_number-1)*25).toString()
             )
             await page.goto(job_url)
+            if (page_number === 1) {
+                const jobs_number = await getNumberJobs(page)
+                console.log("Jobs number: " + jobs_number)
+            }
             await page.waitFor(1000 * SECS)
             for (let index = 0; index < 400; index++) {await scroll(page)}
             await page.waitFor(1000 * SECS)
@@ -90,6 +94,13 @@ async function getHtmlContent(page) {
         jobs_id_page.push($(element).attr("data-job-id").split(":")[3])
     })
     return jobs_id_page
+}
+
+async function getNumberJobs(page) {
+    const html = await page.content()
+    const $ = cheerio.load(html)
+    const jobs_number = $("div .jobs-search-two-pane__title-heading small").text().trim().split(" ")[0]
+    return jobs_number
 }
 
 const getJobContent = async (job_id) => {

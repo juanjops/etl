@@ -9,28 +9,36 @@ const Linkedin = mongoose.model("linkedin", {
         trim: true
     },
     title: {
-        type: String
+        type: String,
+        trim: true
     },
     company: {
-        type: String
+        type: String,
+        trim: true
     },
     location: {
-        type: String
+        type: String,
+        trim: true
     },
     posted: {
-        type: String
+        type: String,
+        trim: true
     },
     applicants: {
-        type: String
+        type: String,
+        trim: true
     },
     text: {
-        type: String
+        type: String,
+        trim: true
     },
     level: {
-        type: String
+        type: String,
+        trim: true
     },
     type: {
-        type: String
+        type: String,
+        trim: true
     }
 })
 
