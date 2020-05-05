@@ -15,7 +15,7 @@ const post_url = `http://127.0.0.1:${C.SERVER_PORT}/linkedin`
 const main = async (jobs_search_specs) => {
     try {
         const jobs_id = await getJobsId(jobs_search_specs)
-        console.log("Jobs scraped: " + jobs_id.length.toString())
+        console.log("Scraped Jobs: " + jobs_id.length.toString())
         jobs_id.map(job_id => getJobContent(job_id))
     } catch (e) {
         console.log(e)
@@ -36,7 +36,7 @@ const getJobsId = async (job_search_specs) => {
 
     try {
 
-        const browser = await puppeteer.launch({headless: false})
+        const browser = await puppeteer.launch({headless: true})
         const page = await browser.newPage()
     
         await page.goto(C.LINKEDIN_URL + "/login")
@@ -59,7 +59,7 @@ const getJobsId = async (job_search_specs) => {
             await page.goto(job_url)
             if (page_number === 1) {
                 const jobs_number = await getNumberJobs(page)
-                console.log("Jobs number: " + jobs_number)
+                console.log("Jobs Number: " + jobs_number)
             }
             await page.waitFor(1000 * SECS)
             for (let index = 0; index < 400; index++) {await scroll(page)}

@@ -22,4 +22,4 @@ const JOB_SEARCH_SPECS = {
     "time_range": "Past 24 hours"
 }
 
-// linkedin_scraper(JOB_SEARCH_SPECS)
+linkedin_scraper(JOB_SEARCH_SPECS)
