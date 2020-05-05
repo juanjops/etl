@@ -15,7 +15,7 @@ router.post("/linkedin", async (req, res) => {
 
 })
 
-router.post("/play", async (req, res) => {
+router.post("/marianna", async (req, res) => {
 
     try {
         const job = await Play(req.body).save()
