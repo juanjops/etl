@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
+const C = require("../constants.js")
 
-mongoose.connect('mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/test?retryWrites=true&w=majority', {
+
+mongoose.connect(C.MONGODB_URL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
