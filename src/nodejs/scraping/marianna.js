@@ -6,7 +6,9 @@ const C = require("../constants.js")
 const TIMES_PARAMETERS = {
     "Past 24 hours": "r86400",
     "Past Week": "r604800",
-    "Past Month": "r2592000"}
+    "Past Month": "r2592000",
+    "Any Time": ""
+}
 
 const SECS = 3
 
@@ -48,8 +50,8 @@ const getJobsId = async (job_search_specs) => {
         await page.waitForNavigation()
         for (let page_number = 1; page_number < 40; page_number++) {
             let job_url = (
-                LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
-                "f_TPR=" + 
+                LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3" +
+                "&f_TPR=" + 
                 TIMES_PARAMETERS[job_search_specs["time_range"]] +
                 "&keywords=" +
                 adapt_words(job_search_specs["key_words"]) + "%2C%20" +
