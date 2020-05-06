@@ -10,6 +10,8 @@ const TIMES_PARAMETERS = {
 
 const SECS = 3
 
+const LINKEDIN_URL = "https://www.linkedin.com"
+
 const post_url = `http://127.0.0.1:${C.SERVER_PORT}/linkedin`
 
 const main = async (jobs_search_specs) => {
@@ -39,14 +41,14 @@ const getJobsId = async (job_search_specs) => {
         const browser = await puppeteer.launch({headless: true})
         const page = await browser.newPage()
     
-        await page.goto(C.LINKEDIN_URL + "/login")
+        await page.goto(LINKEDIN_URL + "/login")
         await page.type('#username', C.USER)
         await page.type('#password', C.PASSWORD)
         await page.click(".from__button--floating")
         await page.waitForNavigation()
         for (let page_number = 1; page_number < 40; page_number++) {
             let job_url = (
-                C.LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
+                LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4&" +
                 "f_TPR=" + 
                 TIMES_PARAMETERS[job_search_specs["time_range"]] +
                 "&keywords=" +
@@ -107,7 +109,7 @@ const getJobContent = async (job_id) => {
 
     try {
         
-        const res_job = await axios.get(C.LINKEDIN_URL + "/jobs/view/" + job_id)
+        const res_job = await axios.get(LINKEDIN_URL + "/jobs/view/" + job_id)
         
         const $ = cheerio.load(res_job.data)
         const title = $(".topcard__title").text()
