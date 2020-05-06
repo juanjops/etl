@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const Linkedin = mongoose.model("play", {
+const Linkedin = mongoose.model("marianna", {
 
     job_id: {
         type: String,
