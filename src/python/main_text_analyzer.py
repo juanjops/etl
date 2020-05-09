@@ -71,7 +71,8 @@ def get_key_words(job):
 
 def create_analysis(db):
 
-    print("raw collection jobs: ", db[COLLECTION].count())
+    print("start time: ", datetime.datetime.now())
+    print("raw collection jobs: ", db[COLLECTION].count_documents({}))
     db[COLLECTION].aggregate(
         [ 
             { "$sort": { "_id": 1 } }, 
@@ -83,16 +84,19 @@ def create_analysis(db):
             { "$out": CLEAN_COLLECTION}
         ]
     )
-    print("clean collection jobs: ", db[CLEAN_COLLECTION].count())
+    print("clean collection jobs: ", db[CLEAN_COLLECTION].count_documents({}))
     jobs_id = [job["job_id"] for job in list(
         db[CLEAN_COLLECTION].find({}, {"job_id":1}))] 
     jobs_id_already_analyzed = [job["job_id"] for job in list(
         db[ANALYSYS_COLLECTION].find({}, {"job_id":1}))]
-    jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]  
-    jobs = [list(db[CLEAN_COLLECTION].find(
-        {"job_id": job_id}, {"job_id":1, "text":1}))[0] for job_id in jobs_id_not_analyzed]
+    print("jobs already analyzed: ", len(jobs_id_already_analyzed))
+    jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]
+    print("jobs not analyzed: ", len(jobs_id_not_analyzed))  
+    jobs = list(db[CLEAN_COLLECTION].find(
+        {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1}))
     new_jobs = list(map(get_key_words, jobs))
     db[ANALYSYS_COLLECTION].insert_many(new_jobs)
+    print("finish time: ",datetime.datetime.now())
 
 
 if __name__ == "__main__":
