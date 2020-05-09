@@ -18,7 +18,7 @@ app.listen(port, () => {
 
 const JOB_SEARCH_SPECS = {
     "key_words": "data science",
-    "location" : "Madrid",
+    "location" : "London",
     "time_range": "Past 24 hours"
 }
 

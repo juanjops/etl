@@ -64,6 +64,7 @@ def get_key_words(job):
         job["key_words"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[0]
         job["misspelled_words"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[1]
         job["experience"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[2]
+        del job["text"]
     except:
         job["key_words"] = "Language not detected"
         job["misspelled_words"] = "Language not detected"
@@ -94,8 +95,9 @@ def create_analysis(db):
     print("jobs not analyzed: ", len(jobs_id_not_analyzed))  
     jobs = list(db[CLEAN_COLLECTION].find(
         {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1}))
-    new_jobs = list(map(get_key_words, jobs))
-    db[ANALYSYS_COLLECTION].insert_many(new_jobs)
+    for job in jobs:
+        get_key_words(job)
+        db[ANALYSYS_COLLECTION].insert_one(job)
     print("finish time: ",datetime.datetime.now())
 
 
