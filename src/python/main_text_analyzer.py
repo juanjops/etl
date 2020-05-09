@@ -14,9 +14,9 @@ DATA_BASE = "jobs"
 
 COLLECTION = "linkedins"
 
-CLEAN_COLLECTION = COLLECTION + "clean"
+CLEAN_COLLECTION = COLLECTION + "_clean"
 
-ANALYSYS_COLLECTION = COLLECTION + "analysis"
+ANALYSYS_COLLECTION = COLLECTION + "_analysis"
 
 EN_NLP = en_core_web_sm.load()
 ES_NLP = es_core_news_sm.load()
@@ -75,9 +75,9 @@ def get_key_words(job):
         job["misspelled_words"] = "Language not detected"
         job["experience"] = "Language not detected"
 
-def create_anaysis(db):
+def create_analysis(db):
 
-    db.COLLECTION.aggregate(
+    db[COLLECTION].aggregate(
         [ 
             { "$sort": { "_id": 1 } }, 
             { "$group": { 
@@ -89,15 +89,15 @@ def create_anaysis(db):
         ]
     )
 
-    jobs = list(db.CLEAN_COLLECTION.find({}, {"job_id":1, "text":1}))  
+    jobs = list(db[CLEAN_COLLECTION].find({}, {"job_id":1, "text":1}))  
 
     new_jobs = list(map(get_key_words, jobs))
 
-    db.ANALYSYS_COLLECTION.insert_many(new_jobs)
+    db[ANALYSYS_COLLECTION].insert_many(new_jobs)
 
 
 if __name__ == "__main__":
 
     DB = MongoClient(DB_URL).get_database(DATA_BASE)
 
-    create_anaysis(DB)
+    create_analysis(DB)
