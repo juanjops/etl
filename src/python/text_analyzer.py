@@ -5,39 +5,31 @@ from spellchecker import SpellChecker
 from collections import OrderedDict
 
 
-EN_NLP = spacy.load("en_core_web_sm")
-ES_NLP = spacy.load("es_core_news_sm")
-
-LANGUAGES = {
-    "en": EN_NLP,
-    "es": ES_NLP
-}
-
-
 class JobsWords():
     
-    def __init__(self, text, key_words):
+    def __init__(self, key_words, models):
 
-        self.text = text
         self.key_words = key_words
-        self.language = detect(text)
+        self.models = models
 
-    def get_key_misspelled_words(self):
+    def get_key_misspelled_words(self, text):
 
-        clean_text = self.get_reg()
-        tokens = self.get_tokens(clean_text)
+        language = detect(text)
+        clean_text = JobsWords.get_reg(text)
+        tokens = self.get_tokens(language, clean_text)
         selected_key_words = self.get_key_words(tokens)
-        misspelled_words = self.get_misspelled_words(tokens, selected_key_words)
-        sentence_experience = self.get_sentence_word_related("Experience")
+        misspelled_words = JobsWords.get_misspelled_words(language, tokens, selected_key_words)
+        sentence_experience = self.get_sentence_word_related(language, text, "Experience")
 
         return (
             " ".join(selected_key_words),
             " ".join(misspelled_words),
             ".".join(sentence_experience))
 
-    def get_reg(self):
+    @staticmethod
+    def get_reg(text):
 
-        clean_text = re.sub('[)!#?¿,:";+./(•]|-', ' ', self.text)
+        clean_text = re.sub('[)!#?¿,:";+./(•]|-', ' ', text)
         clean_text = re.sub(r"([a-z])([A-Z]|[0-9])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([0-9])([A-Z]|[a-z])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([A-Z])([A-Z])([a-z])", r"\1 \2\3", clean_text)
@@ -45,9 +37,9 @@ class JobsWords():
 
         return clean_text
 
-    def get_tokens(self, clean_text):
+    def get_tokens(self, language, clean_text):
 
-        documents = LANGUAGES[self.language](clean_text)
+        documents = self.models[language](clean_text)
         tokens = [token.lemma_ for token in documents]
 
         return tokens
@@ -73,9 +65,10 @@ class JobsWords():
 
         return list(dict.fromkeys(selected_key_words))
 
-    def get_misspelled_words(self, tokens, selected_key_words):
+    @staticmethod
+    def get_misspelled_words(language, tokens, selected_key_words):
 
-        spell = SpellChecker(language=self.language)
+        spell = SpellChecker(language=language)
         misspelled_words = list(spell.unknown(tokens))
         selected_key_words_plu = JobsWords.get_plural_key_words(selected_key_words)
         misspelled_words = [
@@ -83,12 +76,12 @@ class JobsWords():
 
         return list(dict.fromkeys(misspelled_words))
 
-    def get_sentence_word_related(self, word):
+    def get_sentence_word_related(self, language, text, word):
         
-        clean_text = re.sub('-', ' ', self.text)
+        clean_text = re.sub('-', ' ', text)
         clean_text = re.sub(r"([.])([A-Z])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([a-z])([A-Z])", r"\1, \2", clean_text)
-        documents = LANGUAGES[self.language](clean_text)
+        documents = self.models[language](clean_text)
         sentences = [
             str(sentence) for sentence in list(documents.sents)
             if (word in str(sentence)) or (word.lower() in str(sentence))]

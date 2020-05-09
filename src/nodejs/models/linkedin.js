@@ -20,12 +20,8 @@ const Linkedin = mongoose.model("linkedin", {
         trim: true
     },
     posted: {
-        type: String,
-        trim: true
-    },
-    applicants: {
-        type: String,
-        trim: true
+        type: Date,
+        default: Date.now
     },
     text: {
         type: String,
@@ -39,6 +35,7 @@ const Linkedin = mongoose.model("linkedin", {
         type: String,
         trim: true
     }
+
 })
 
 

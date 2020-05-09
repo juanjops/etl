@@ -1,23 +1,30 @@
-from datetime import datetime
-import csv
-import os
+from pymongo import MongoClient
+import pandas as pd
+from bson.objectid import ObjectId
+import datetime
 from text_analyzer import JobsWords
-from os import listdir
-from os.path import isfile, join
+import json
+import en_core_web_sm
+import es_core_news_sm
 
 
-DATA_BASE_ETL_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database\\etl\\"
-DATA_BASE_TEXT_ROUTE = "C:\\Users\\Sectorea\\Code\\linkedin\\database\\text_analyzed\\"
+DB_URL = 'mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/jobs?retryWrites=true&w=majority'
 
-# FILE = "data_science_New_Zealand_Any_Time_2020-04-17.csv"
-all_files = [file for file in listdir(DATA_BASE_ETL_ROUTE) if isfile(join(DATA_BASE_ETL_ROUTE, file))]
-files_already_analyzed = [
-    file.split("text_analyze_",1)[1] for file in listdir(DATA_BASE_TEXT_ROUTE)
-    if isfile(join(DATA_BASE_TEXT_ROUTE, file))]
-new_files = [
-    file for file in listdir(DATA_BASE_ETL_ROUTE)
-    if isfile(join(DATA_BASE_ETL_ROUTE, file)) and 
-    (file not in files_already_analyzed)]
+DATA_BASE = "jobs"
+
+COLLECTION = "linkedins"
+
+CLEAN_COLLECTION = COLLECTION + "clean"
+
+ANALYSYS_COLLECTION = COLLECTION + "analysis"
+
+EN_NLP = en_core_web_sm.load()
+ES_NLP = es_core_news_sm.load()
+
+MODELS = {
+    "en": EN_NLP,
+    "es": ES_NLP
+}
 
 KEY_WORDS_PARTS = {
     "languages": [
@@ -56,56 +63,41 @@ KEY_WORDS_PARTS = {
 
 KEY_WORDS = sum(KEY_WORDS_PARTS.values(), [])
 
+TEXT_ANALYZER = JobsWords(KEY_WORDS, MODELS)
 
-def get_jobs_data(file_name):
+def get_key_words(job):
+    try:
+        job["key_words"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[0]
+        job["misspelled_words"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[1]
+        job["experience"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[2]
+    except:
+        job["key_words"] = "Language not detected"
+        job["misspelled_words"] = "Language not detected"
+        job["experience"] = "Language not detected"
 
-    file_data = []
-    with open(DATA_BASE_ETL_ROUTE + file_name, encoding='utf-8') as file_to_read:
-        read_file = csv.DictReader(file_to_read, delimiter=',')
-        for row in read_file:
-            file_data.append(dict(row))
+def create_anaysis(db):
 
-    return file_data
+    db.COLLECTION.aggregate(
+        [ 
+            { "$sort": { "_id": 1 } }, 
+            { "$group": { 
+                "_id": "$job_id", 
+                "doc": { "$first": "$$ROOT" } 
+            }}, 
+            { "$replaceRoot": { "newRoot": "$doc" } },
+            { "$out": CLEAN_COLLECTION}
+        ]
+    )
 
+    jobs = list(db.CLEAN_COLLECTION.find({}, {"job_id":1, "text":1}))  
 
-def get_text_analyzed(jobs_data, key_words):
+    new_jobs = list(map(get_key_words, jobs))
 
-    for job in jobs_data:
-
-        try:
-            jobs_token_text = JobsWords(job["text"], key_words)
-            job["key_words"], job["misspelled_words"], job["Experience"] = \
-                 jobs_token_text.get_key_misspelled_words()
-        except:
-            print(job["id"], " no text analyzed")
-
-    return jobs_data
-
-
-def get_csv_from_list_of_dicts(one_jobs_data, file_name):
-
-    file_csv = DATA_BASE_TEXT_ROUTE + "text_analyze_" + file_name
-    csv_columns = one_jobs_data[0].keys()
-
-    with open(file_csv, 'w', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
-        writer.writeheader()
-        for data in one_jobs_data:
-            writer.writerow(data)
+    db.ANALYSYS_COLLECTION.insert_many(new_jobs)
 
 
 if __name__ == "__main__":
 
-    # JOBS_DATA = get_jobs_data(FILE)
+    DB = MongoClient(DB_URL).get_database(DATA_BASE)
 
-    # JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
-
-    # get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, FILE)
-
-    for file in new_files:
-
-        JOBS_DATA = get_jobs_data(file)
-
-        JOBS_DATA_ANALYZED = get_text_analyzed(JOBS_DATA, KEY_WORDS)
-
-        get_csv_from_list_of_dicts(JOBS_DATA_ANALYZED, file)
+    create_anaysis(DB)

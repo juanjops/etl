@@ -117,13 +117,11 @@ const getJobContent = async (job_id) => {
         const title = $(".topcard__title").text()
         const company =  $($(".topcard__flavor-row span")[0]).text()
         const location =  $($(".topcard__flavor-row span")[1]).text()
-        const posted =  $($(".topcard__flavor-row span")[2]).text()
-        const applicants = $(".num-applicants__caption").text()
         const text = $(".description__text").text()
         const level = $($(".job-criteria__list span")[1]).text()
         const type = $($(".job-criteria__list span")[2]).text()
 
-        await axios.post(post_url, {job_id, title, company, location, posted, applicants, text, level, type})
+        await axios.post(post_url, {job_id, title, company, location, text, level, type})
 
     } catch (e) {
         console.log("Error in job_id " + job_id)
