@@ -9,18 +9,12 @@ import es_core_news_sm
 
 
 DB_URL = 'mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/jobs?retryWrites=true&w=majority'
-
 DATA_BASE = "jobs"
-
 COLLECTION = "linkedins"
-
 CLEAN_COLLECTION = COLLECTION + "_clean"
-
 ANALYSYS_COLLECTION = COLLECTION + "_analysis"
-
 EN_NLP = en_core_web_sm.load()
 ES_NLP = es_core_news_sm.load()
-
 MODELS = {
     "en": EN_NLP,
     "es": ES_NLP
@@ -77,6 +71,7 @@ def get_key_words(job):
 
 def create_analysis(db):
 
+    print("raw collection jobs: ", db[COLLECTION].count())
     db[COLLECTION].aggregate(
         [ 
             { "$sort": { "_id": 1 } }, 
@@ -88,11 +83,15 @@ def create_analysis(db):
             { "$out": CLEAN_COLLECTION}
         ]
     )
-
-    jobs = list(db[CLEAN_COLLECTION].find({}, {"job_id":1, "text":1}))  
-
+    print("clean collection jobs: ", db[CLEAN_COLLECTION].count())
+    jobs_id = [job["job_id"] for job in list(
+        db[CLEAN_COLLECTION].find({}, {"job_id":1}))] 
+    jobs_id_already_analyzed = [job["job_id"] for job in list(
+        db[ANALYSYS_COLLECTION].find({}, {"job_id":1}))]
+    jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]  
+    jobs = [list(db[CLEAN_COLLECTION].find(
+        {"job_id": job_id}, {"job_id":1, "text":1}))[0] for job_id in jobs_id_not_analyzed]
     new_jobs = list(map(get_key_words, jobs))
-
     db[ANALYSYS_COLLECTION].insert_many(new_jobs)
 
 
