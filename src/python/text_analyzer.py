@@ -22,6 +22,7 @@ class JobsWords():
         sentence_experience = self.get_sentence_word_related(language, text, "Experience")
 
         return (
+            " ".join(tokens),
             " ".join(selected_key_words),
             " ".join(misspelled_words),
             ".".join(sentence_experience))
@@ -29,10 +30,11 @@ class JobsWords():
     @staticmethod
     def get_reg(text):
 
-        clean_text = re.sub('[)!#?¿,:";+./(•]|-', ' ', text)
+        clean_text = re.sub('[)!#?¿,:"*&;+./(•€$£%…=]|-', ' ', text)
         clean_text = re.sub(r"([a-z])([A-Z]|[0-9])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([0-9])([A-Z]|[a-z])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([A-Z])([A-Z])([a-z])", r"\1 \2\3", clean_text)
+        clean_text = re.sub(r"\b\d+\b", "", clean_text)
         clean_text = clean_text.lower()
 
         return clean_text
@@ -41,8 +43,14 @@ class JobsWords():
 
         documents = self.models[language](clean_text)
         tokens = [token.lemma_ for token in documents]
+        all_stopwords = self.models[language].Defaults.stop_words
+        tokens_without_sw= [word for word in tokens if word not in all_stopwords]
+        tokens_without_sw = list(filter(("-PRON-").__ne__, tokens_without_sw))
+        tokens_without_sw = [x.strip(' ') for x in tokens_without_sw]
+        tokens_without_sw = list(filter(("").__ne__, tokens_without_sw))
+        tokens_without_sw = list(filter(("-").__ne__, tokens_without_sw))
 
-        return tokens
+        return tokens_without_sw
 
     @staticmethod
     def get_plural_key_words(words):

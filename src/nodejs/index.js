@@ -18,11 +18,11 @@ app.listen(port, () => {
 
 const JOB_SEARCH_SPECS = {
     "key_words": "data science",
-    "location" : "London",
+    "location" : "Madrid",
     "time_range": "Past 24 hours"
 }
 
-linkedin_scraper(JOB_SEARCH_SPECS)
+// linkedin_scraper(JOB_SEARCH_SPECS)
 
 const MARIANNA_JOB_SEARCH_SPECS = {
     "key_words": "marketing",
@@ -30,4 +30,4 @@ const MARIANNA_JOB_SEARCH_SPECS = {
     "time_range": "Past 24 hours"
 }
 
-// marianna_scraper(MARIANNA_JOB_SEARCH_SPECS)
+marianna_scraper(MARIANNA_JOB_SEARCH_SPECS)
