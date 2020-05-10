@@ -14,3 +14,5 @@ The total amount of time 0.0375*number_of_jobs + 1.5  (minutes)
 
 Command to activate mongo /c/Users/Sectorea/mongodb/bin/mongod.exe --dbpath=/c/Users/Sectorea/mongodb-data/
 
+Command to make a backup /c/Users/Sectorea/mongodb/bin/mongoexport.exe --uri="mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/jobs?retryWrites=true&w=majority"  --collection=linkedins  --out=back-up_2.json 
+

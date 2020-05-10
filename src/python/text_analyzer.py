@@ -30,7 +30,7 @@ class JobsWords():
     @staticmethod
     def get_reg(text):
 
-        clean_text = re.sub('[)!#?¿,:"*&;+./(•€$£%…=]|-', ' ', text)
+        clean_text = re.sub('[)!#?¿,:"*&;+./(•€$£%…=-–]', ' ', text)
         clean_text = re.sub(r"([a-z])([A-Z]|[0-9])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([0-9])([A-Z]|[a-z])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([A-Z])([A-Z])([a-z])", r"\1 \2\3", clean_text)
@@ -48,7 +48,6 @@ class JobsWords():
         tokens_without_sw = list(filter(("-PRON-").__ne__, tokens_without_sw))
         tokens_without_sw = [x.strip(' ') for x in tokens_without_sw]
         tokens_without_sw = list(filter(("").__ne__, tokens_without_sw))
-        tokens_without_sw = list(filter(("-").__ne__, tokens_without_sw))
 
         return tokens_without_sw
 
@@ -86,7 +85,7 @@ class JobsWords():
 
     def get_sentence_word_related(self, language, text, word):
         
-        clean_text = re.sub('-', ' ', text)
+        clean_text = re.sub('[-–]', ' ', text)
         clean_text = re.sub(r"([.])([A-Z])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([a-z])([A-Z])", r"\1, \2", clean_text)
         documents = self.models[language](clean_text)

@@ -59,7 +59,8 @@ KEY_WORDS = sum(KEY_WORDS_PARTS.values(), [])
 
 TEXT_ANALYZER = JobsWords(KEY_WORDS, MODELS)
 
-def get_key_words(job):
+
+def get_job_analysis(job):
     try:
         job["tokens"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[0]
         job["key_words"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[1]
@@ -73,9 +74,28 @@ def get_key_words(job):
         job["experience"] = None
 
 
+def delete_repeated_jobs(db, collection):
+
+    db[collection].aggregate(	
+    [ 	
+        { "$sort": { "_id": 1 } }, 	
+        { "$group": { 	
+            "_id": "$job_id", 	
+            "doc": { "$first": "$$ROOT" } 	
+        }}, 	
+        { "$replaceRoot": { "newRoot": "$doc" } },	
+        { "$out": "auxiliar_collection"}	
+    ])
+
+    db[collection].drop()
+    db["auxiliar_collection"].rename(collection)
+    
+
+
 def create_analysis(db):
 
     print("start time: ", datetime.datetime.now())
+    delete_repeated_jobs(db, COLLECTION)
     print("raw collection jobs: ", db[COLLECTION].count_documents({}))
     jobs_id = [job["job_id"] for job in list(
         db[COLLECTION].find({}, {"job_id":1}))] 
@@ -83,11 +103,11 @@ def create_analysis(db):
         db[ANALYSYS_COLLECTION].find({}, {"job_id":1}))]
     print("jobs already analyzed: ", len(jobs_id_already_analyzed))
     jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]
-    jobs_id_not_analyzed = list(dict.fromkeys(jobs_id_not_analyzed))
+    print("jobs to analyzed: ", len(jobs_id_not_analyzed))
     jobs = list(db[COLLECTION].find(
         {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1}))
     for job in jobs:
-        get_key_words(job)
+        get_job_analysis(job)
         db[ANALYSYS_COLLECTION].insert_one(job)
     print("finish time: ",datetime.datetime.now())
 

@@ -14,16 +14,6 @@ router.post("/linkedin", async (req, res) => {
 
 })
 
-router.post("/marianna", async (req, res) => {
-
-    try {
-        const job = await Linkedin(req.body).save()
-        res.status(201).send(job)
-    } catch (e){
-        res.status(400).send(e)
-    }
-
-})
 
 router.get("/linkedin", async (req, res) => {
 
