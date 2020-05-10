@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const Linkedin = mongoose.model("linkedin", {
+const dataScience = mongoose.model("dataScience", {
 
     job_id: {
         type: String,
@@ -39,4 +39,4 @@ const Linkedin = mongoose.model("linkedin", {
 })
 
 
-module.exports = Linkedin
+module.exports = dataScience

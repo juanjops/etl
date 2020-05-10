@@ -14,7 +14,7 @@ const SECS = 3
 
 const LINKEDIN_URL = "https://www.linkedin.com"
 
-const post_url = `http://127.0.0.1:${C.SERVER_PORT}/linkedin`
+const post_url = `http://127.0.0.1:${C.SERVER_PORT}/dataScience`
 
 const main = async (jobs_search_specs) => {
     try {
@@ -128,8 +128,6 @@ const getJobContent = async (job_id) => {
     }
 
 }
-
-module.exports = main
 
 
 const JOB_SEARCH_SPECS = {

@@ -129,6 +129,7 @@ const getJobContent = async (job_id) => {
 
 }
 
+
 const JOB_SEARCH_SPECS = {
     "key_words": "marketing",
     "location" : "Madrid",

@@ -1,12 +1,12 @@
 const express = require("express")
-const Linkedin = require("../models/linkedin.js")
+const dataScience = require("../models/data-science.js")
 const router = new express.Router()
 
 
-router.post("/linkedin", async (req, res) => {
+router.post("/dataScience", async (req, res) => {
 
     try {
-        const job = await Linkedin(req.body).save()
+        const job = await dataScience(req.body).save()
         res.status(201).send(job)
     } catch (e){
         res.status(400).send(e)
@@ -15,10 +15,10 @@ router.post("/linkedin", async (req, res) => {
 })
 
 
-router.get("/linkedin", async (req, res) => {
+router.get("/dataScience", async (req, res) => {
 
     try {
-        const jobs = await Linkedin.find({})
+        const jobs = await dataScience.find({})
         res.send(jobs)
     } catch (e) {
         res.status(500).send()
@@ -27,11 +27,11 @@ router.get("/linkedin", async (req, res) => {
 })
 
 
-router.get("/linkedin/:id", async (req, res) => {
+router.get("/dataScience/:id", async (req, res) => {
 
 
     try {
-        const job = await Linkedin.findById(req.params.id)
+        const job = await dataScience.findById(req.params.id)
         if (!job) {
             return res.status(404).send()
         }
