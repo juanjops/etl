@@ -3,6 +3,9 @@ import spacy
 from langdetect import detect
 from spellchecker import SpellChecker
 from collections import OrderedDict
+from itertools import chain
+import json
+from collections import Counter
 
 
 class JobsWords():
@@ -20,17 +23,19 @@ class JobsWords():
         selected_key_words = self.get_key_words(tokens)
         misspelled_words = JobsWords.get_misspelled_words(language, tokens, selected_key_words)
         sentence_experience = self.get_sentence_word_related(language, text, "Experience")
+        cluster = self.get_cluster(tokens)
 
         return (
-            " ".join(tokens),
             " ".join(selected_key_words),
             " ".join(misspelled_words),
-            ".".join(sentence_experience))
+            ".".join(sentence_experience),
+            Counter(cluster),
+            language)
 
     @staticmethod
     def get_reg(text):
 
-        clean_text = re.sub('[)!#?¿,:"*&;+./(•€$£%…=-–]', ' ', text)
+        clean_text = re.sub('[)!#?¿,:"*&;+./(•€$£%…=™“]|-|–', ' ', text)
         clean_text = re.sub(r"([a-z])([A-Z]|[0-9])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([0-9])([A-Z]|[a-z])", r"\1 \2", clean_text)
         clean_text = re.sub(r"([A-Z])([A-Z])([a-z])", r"\1 \2\3", clean_text)
@@ -67,8 +72,9 @@ class JobsWords():
     def get_key_words(self, tokens):
 
         tokens_sing_plu = JobsWords.get_plural_key_words(tokens)
+        key_words = sum(self.key_words.values(), [])
         selected_key_words = [
-            word for word in self.key_words if word in tokens_sing_plu]
+            word for word in key_words if word in tokens_sing_plu]
 
         return list(dict.fromkeys(selected_key_words))
 
@@ -94,3 +100,12 @@ class JobsWords():
             if (word in str(sentence)) or (word.lower() in str(sentence))]
 
         return sentences
+
+    def get_cluster(self, tokens):
+
+        cluster = [[
+            key for token in tokens if token in self.key_words[key]]
+            for key in self.key_words.keys()]
+        cluster = list(chain(*cluster))
+
+        return cluster

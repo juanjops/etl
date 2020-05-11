@@ -10,7 +10,7 @@ import es_core_news_sm
 
 DB_URL = 'mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/jobs?retryWrites=true&w=majority'
 DATA_BASE = "jobs"
-COLLECTION = "dataSciences"
+COLLECTION = "datasciences"
 CLEAN_COLLECTION = COLLECTION + "_clean"
 ANALYSYS_COLLECTION = COLLECTION + "_analysis"
 EN_NLP = en_core_web_sm.load()
@@ -20,58 +20,61 @@ MODELS = {
     "es": ES_NLP
 }
 
-KEY_WORDS_PARTS = {
-    "languages": [
-        "python", "r", "scala", "matlab", "java", "kotlin", "javascript", "node",
-        "clojure"],
-    "data_base": [
-        "impala", "spark", "hive", "kudu", "sql", "no sql", "kafka", "hadoop",
-        "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs", "postgresql", "elasticsearch",
-        "postgre", "pyspark", "lucene", "redis", "kinesis"],
-    "bi": [
-        "qlik", "tableau", "powerbi", "qlikview", "qliksense", "kibana"],
-    "blockchain": [
-        "neo", "blockchain"],
-    "companies": [
-        "ab initio", "cloudera", "google", "databricks", "knime", "qubole"],
-    "data_parts": [
-        " api", "etl", "b2b", "agile", "kpi", "crm", "scrum", "mining", "dashboard",
-        "visualisation", "startup", " bi", "backend", "frontend",
-        "virtualization", "micromanagement", "mathematic", "microservice"],
-    "cloud": [
-        "aws", "gcp", "cloud", "azure"],
-    "machine_learning": [
-        "ai", "nlp"],
-    "libraries": [
-        "tensorflow", "keras", "sklearn", "redux", "pytorch", "jupyter"],
-    "microservices": [
-        "docker", "kubernetes", "ansible", "jenkins", "kubeflow", "sagemaker"
+KEY_WORDS = {
+    "ML": [
+        "python", "r", "tensorflow", "keras", "sklearn", "redux", "pytorch", "jupyter", "nlp"
     ],
-    "operative_system": [
-        "linux", "windows"
+    "Math": [
+        "matlab", "ai", "mathematic"
     ],
-    "development": [
+    "BI": [
+        "sql", "no sql", "qlik", "tableau", "powerbi", "qlikview", "qliksense", "kibana", "dashboard",
+        "visualisation", "bi"
+    ],
+    "Big_D": [
+        "scala", "impala", "spark", "hive", "kudu", "kafka", "hadoop", "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs",
+        "postgre", "pyspark", "lucene", "redis", "kinesis"
+    ],
+    "CI/CD": [
+        "ab initio", "cloudera", "gcp", "databricks", "knime", "qubole", "b2b", "agile", "aws", "azure", 
         "gitlab", "github", "jira", "confluence", "angular", "bitbucket"
+    ],
+    "Serv": [
+        "java", "kotlin", "javascript", "node", "clojure", "neo", "blockchain", " api", "etl", "kpi", "crm",
+        "backend", "frontend", "virtualization", "micromanagement", "docker", "kubernetes", "ansible", "jenkins",
+        "kubeflow", "sagemaker"
     ]
 }
 
-KEY_WORDS = sum(KEY_WORDS_PARTS.values(), [])
 
 TEXT_ANALYZER = JobsWords(KEY_WORDS, MODELS)
 
 
 def get_job_analysis(job):
     try:
-        job["tokens"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[0]
-        job["key_words"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[1]
-        job["misspelled_words"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[2]
-        job["experience"] = TEXT_ANALYZER.get_key_misspelled_words(job["text"])[3]
+        text_analysis = TEXT_ANALYZER.get_key_misspelled_words(job["text"])
+        job["key_words"] = text_analysis[0]
+        job["misspelled_words"] = text_analysis[1]
+        job["experience"] = text_analysis[2]
+        job["ML"] = text_analysis[3]["ML"]
+        job["Math"] = text_analysis[3]["Math"]
+        job["BI"] = text_analysis[3]["BI"]
+        job["Big_D"] = text_analysis[3]["Big_D"]
+        job["CI/CD"] = text_analysis[3]["CI/CD"]
+        job["Serv"] = text_analysis[3]["Serv"]
+        job["language"] = text_analysis[4]
         del job["text"]
     except:
-        job["tokens"] = None
         job["key_words"] = None
         job["misspelled_words"] = None
         job["experience"] = None
+        job["ML"] = None
+        job["Math"] = None
+        job["BI"] = None
+        job["Big_D"] = None
+        job["CI/CD"] = None
+        job["Serv"] = None
+        job["language"] = None
 
 
 def delete_repeated_jobs(db, collection):
@@ -89,7 +92,6 @@ def delete_repeated_jobs(db, collection):
 
     db[collection].drop()
     db["auxiliar_collection"].rename(collection)
-    
 
 
 def create_analysis(db):

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const dataScience = mongoose.model("dataScience", {
+const dataScience = mongoose.model("datascience", {
 
     job_id: {
         type: String,

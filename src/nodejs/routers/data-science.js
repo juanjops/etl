@@ -3,7 +3,7 @@ const dataScience = require("../models/data-science.js")
 const router = new express.Router()
 
 
-router.post("/dataScience", async (req, res) => {
+router.post("/datascience", async (req, res) => {
 
     try {
         const job = await dataScience(req.body).save()
