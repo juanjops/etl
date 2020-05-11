@@ -129,11 +129,10 @@ const getJobContent = async (job_id) => {
 
 }
 
-
 const JOB_SEARCH_SPECS = {
     "key_words": "marketing",
     "location" : "Madrid",
-    "time_range": "Past Month"
+    "time_range": "Past 24 hours"
 }
 
 main(JOB_SEARCH_SPECS)

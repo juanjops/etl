@@ -34,8 +34,12 @@ const dataScience = mongoose.model("datascience", {
     type: {
         type: String,
         trim: true
+    },
+    available: {
+        type: String,
+        trim: true,
+        default: "Available"
     }
-
 })
 
 
