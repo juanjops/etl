@@ -26,11 +26,9 @@ router.patch("/datascience/:job_id", async (req, res) => {
     }
 })
 
-
 router.get("/datascience/available/:available", async (req, res) => {
 
     try {
-        console.log(req.body.available)
         const jobs = await dataScience.find({available: req.params.available})
         res.send(jobs)
     } catch (e) {
@@ -39,6 +37,16 @@ router.get("/datascience/available/:available", async (req, res) => {
 
 })
 
+router.get("/datascience", async (req, res) => {
+
+    try {
+        const jobs = await dataScience.find({})
+        res.send(jobs)
+    } catch (e) {
+        res.status(500).send()
+    }
+
+})
 
 router.get("/datascience/:id", async (req, res) => {
 
@@ -55,6 +63,7 @@ router.get("/datascience/:id", async (req, res) => {
     }
 
 })
+
 
 
 module.exports = router
