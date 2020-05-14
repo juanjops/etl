@@ -22,7 +22,7 @@ MODELS = {
 
 KEY_WORDS = {
     "ML": [
-        "python", "r", "tensorflow", "keras", "sklearn", "redux", "pytorch", "jupyter", "nlp"
+        "python", "r", "tensorflow", "keras", "sklearn", "pytorch", "jupyter", "nlp"
     ],
     "Math": [
         "matlab", "ai", "mathematic"
@@ -42,7 +42,7 @@ KEY_WORDS = {
     "Serv": [
         "java", "kotlin", "javascript", "node", "clojure", "neo", "blockchain", " api", "etl", "kpi", "crm",
         "backend", "frontend", "virtualization", "micromanagement", "docker", "kubernetes", "ansible", "jenkins",
-        "kubeflow", "sagemaker"
+        "kubeflow", "sagemaker", "redux"
     ]
 }
 
