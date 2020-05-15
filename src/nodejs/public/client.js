@@ -1,30 +1,49 @@
-const axios = require("axios")
-const C = require("../constants.js")
+
 console.log('Client-side code running')
 
+const loadJobs = document.getElementById("Load-Button")
 const yesButton = document.getElementById('Yes-Button')
 const NoButton = document.getElementById('No-Button');
 const text = document.getElementById('text')
 
-const COLLECTION_URL = `http://127.0.0.1:${C.SERVER_PORT}/datascience`
+const BASE_URL = 'http://localhost:3000/datascience';
 
-const main = async () => {
-  const jobs = await axios.get(COLLECTION_URL)
-  const jobs_top = jobs.data.slice(0, 10)
-  console.log(jobs_top)
-  var ed = 0
-  yesButton.addEventListener('click', (e) => {
-    text.textContent = jobs_top[ed]
-    ed += 1
-  })
-}
+loadJobs.addEventListener("click", async (e) => {
 
-main()
+  let i = 0
+  let job_id = 0
 
+  try {
+    const res = await axios.get(BASE_URL + "/job_id")
+    text.textContent = res.data[i].text
+    job_id = res.data[i].job_id
 
+    yesButton.addEventListener("click",async (e) => {
+      e.preventDefault()
+      await axios.patch("/datascience/target/" + job_id, {job_id, target: "YES"})
+      i++
+      text.textContent = 'Loading...'
+      text.textContent = res.data[i].text
+      job_id = res.data[i].job_id
+      })
+  
+    NoButton.addEventListener("click",async (e) => {
+      e.preventDefault()
+      await axios.patch("/datascience/target/" + job_id, {job_id, target: "NO"})
+      i++
+      text.textContent = 'Loading...'
+      text.textContent = res.data[i].text
+      job_id = res.data[i].job_id
+      })
 
+  } catch(e) {
+    text.textContent = "ERROR - Jobs not loaded"
+  }
 
-NoButton.addEventListener('click', (e) => {
-  e.preventDefault()
-  console.log('No button was clicked')
 })
+
+
+
+
+
+
