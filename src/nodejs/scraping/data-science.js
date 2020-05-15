@@ -20,10 +20,18 @@ const main = async (jobs_search_specs) => {
     try {
         const jobs_id = await getJobsId(jobs_search_specs)
         console.log("Scraped Jobs: " + jobs_id.length.toString())
-        jobs_id.map(job_id => getJobContent(job_id))
+        for (let page_number = 0; page_number < (jobs_id.length/100).toFixed(0) + 2; page_number++) {
+            let jobs_id_partition = jobs_id.slice(page_number*100, page_number*100 + 100)
+            jobs_id_partition.map(job_id => getJobContent(job_id))
+            await sleep(1000)
+        }
     } catch (e) {
         console.log(e)
     }
+}
+
+async function sleep(miliseconds) {
+    return new Promise(resolve => setTimeout(resolve, miliseconds))
 }
 
 const adapt_words = ((str) => {
