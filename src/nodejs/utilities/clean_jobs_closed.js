@@ -2,7 +2,7 @@ const axios = require("axios")
 const C = require("../constants.js")
 const cheerio = require("cheerio")
 
-const COLLECTION_URL = `http://127.0.0.1:${C.SERVER_PORT}/datascience`
+const COLLECTION_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences`
 
 const LINKEDIN_URL = "https://www.linkedin.com"
 

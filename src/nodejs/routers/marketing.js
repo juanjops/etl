@@ -3,7 +3,7 @@ const Marketing = require("../models/marketing.js")
 const router = new express.Router()
 
 
-router.post("/marketing", async (req, res) => {
+router.post("/marketings", async (req, res) => {
 
     try {
         const job = await Marketing(req.body).save()
@@ -15,7 +15,7 @@ router.post("/marketing", async (req, res) => {
 })
 
 
-router.get("/marketing", async (req, res) => {
+router.get("/marketings", async (req, res) => {
 
     try {
         const jobs = await Marketing.find({})
@@ -27,7 +27,7 @@ router.get("/marketing", async (req, res) => {
 })
 
 
-router.get("/marketing/:id", async (req, res) => {
+router.get("/marketings/:id", async (req, res) => {
 
 
     try {

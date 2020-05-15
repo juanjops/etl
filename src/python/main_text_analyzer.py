@@ -35,7 +35,7 @@ KEY_WORDS = {
         "scala", "impala", "spark", "hive", "kudu", "kafka", "hadoop", "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs",
         "postgre", "pyspark", "lucene", "redis", "kinesis"
     ],
-    "CI/CD": [
+    "CI_CD": [
         "ab initio", "cloudera", "gcp", "databricks", "knime", "qubole", "b2b", "agile", "aws", "azure", 
         "gitlab", "github", "jira", "confluence", "angular", "bitbucket"
     ],
@@ -60,7 +60,7 @@ def get_job_analysis(job):
         job["Math"] = text_analysis[3]["Math"]
         job["BI"] = text_analysis[3]["BI"]
         job["Big_D"] = text_analysis[3]["Big_D"]
-        job["CI/CD"] = text_analysis[3]["CI/CD"]
+        job["CI_CD"] = text_analysis[3]["CI/CD"]
         job["Serv"] = text_analysis[3]["Serv"]
         job["language"] = text_analysis[4]
         del job["text"]
@@ -72,7 +72,7 @@ def get_job_analysis(job):
         job["Math"] = None
         job["BI"] = None
         job["Big_D"] = None
-        job["CI/CD"] = None
+        job["CI_CD"] = None
         job["Serv"] = None
         job["language"] = None
 

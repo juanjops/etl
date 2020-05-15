@@ -14,7 +14,7 @@ const SECS = 3
 
 const LINKEDIN_URL = "https://www.linkedin.com"
 
-const post_url = `http://127.0.0.1:${C.SERVER_PORT}/marketing`
+const post_url = `http://127.0.0.1:${C.SERVER_PORT}/marketings`
 
 const main = async (jobs_search_specs) => {
     try {

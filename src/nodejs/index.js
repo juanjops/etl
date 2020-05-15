@@ -2,7 +2,7 @@ const C = require("./constants.js")
 const express = require("express")
 const path = require("path")
 require("./db/mongoose")
-const linkedinRouter = require("./routers/data-science.js")
+const dataScience = require("./routers/data-science.js")
 const marketingRouter = require("./routers/marketing.js")
 const clickRouter = require("./routers/click.js")
 
@@ -11,7 +11,7 @@ const port = process.env.PORT || C.SERVER_PORT
 
 app.use(express.json())
 
-app.use(linkedinRouter)
+app.use(dataScience)
 
 app.use(marketingRouter)
 
