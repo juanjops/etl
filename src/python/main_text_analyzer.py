@@ -11,7 +11,6 @@ import es_core_news_sm
 DB_URL = 'mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/jobs?retryWrites=true&w=majority'
 DATA_BASE = "jobs"
 COLLECTION = "datasciences"
-CLEAN_COLLECTION = COLLECTION + "_clean"
 ANALYSYS_COLLECTION = COLLECTION + "_analysis"
 EN_NLP = en_core_web_sm.load()
 ES_NLP = es_core_news_sm.load()

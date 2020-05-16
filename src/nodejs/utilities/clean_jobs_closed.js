@@ -65,7 +65,7 @@ async function getJobAvail(job_id) {
 async function patch_job(collection_url, job) {
 
     try {
-        const job_url = collection_url + "/" + job.job_id
+        const job_url = collection_url + "/available/" + job.job_id
         await axios.patch(job_url, job)
     } catch(e) {
         console.log(e)

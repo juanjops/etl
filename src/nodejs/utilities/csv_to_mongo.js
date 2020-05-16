@@ -3,7 +3,7 @@ const csv = require("csv-parser")
 const axios = require("axios")
 const C = require("../constants.js")
 
-const post_url = `http://127.0.0.1:${C.SERVER_PORT}/datasciences`
+const post_url = `http://127.0.0.1:${C.SERVER_PORT}/datasciences/jobs`
 
 const main = async (directory) => {
   try {
