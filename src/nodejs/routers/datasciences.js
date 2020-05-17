@@ -68,7 +68,9 @@ router.get("/datasciences/available/:available", async (req, res) => {
 
     try {
         const jobs = await dataScience.find(
-            {available: req.params.available})
+            {available: req.params.available},
+            "job_id available"
+            )
         res.send(jobs)
     } catch (e) {
         res.status(500).send()

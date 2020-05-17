@@ -12,7 +12,7 @@ const main = async () => {
 
         const jobs_id = await get_jobs_id(COLLECTION_URL)
         console.log(jobs_id.length)
-        for (let page_number = 0; page_number < (jobs_id.length/100).toFixed(0) + 1; page_number++) {
+        for (let page_number = 0; page_number < (Math.round(jobs_id.length/100) + 2); page_number++) {
             console.log(page_number)
             let jobs_aux = []
             let jobs_id_partition = jobs_id.slice(page_number*100, page_number*100 + 100)
@@ -21,11 +21,16 @@ const main = async () => {
             })
             let jobs_avail = await Promise.all(jobs_aux)
             jobs_avail.map(job => patch_job(COLLECTION_URL, job))
+            await sleep(1000)
         }
 
     } catch(e) {
         console.log(e)
     }
+}
+
+async function sleep(miliseconds) {
+    return new Promise(resolve => setTimeout(resolve, miliseconds))
 }
 
 async function get_jobs_id(collection_url) {
