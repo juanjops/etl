@@ -8,25 +8,26 @@ const LINKEDIN_URL = "https://www.linkedin.com"
 
 const main = async () => {
     
-    try {
+    const jobs_id = await get_jobs_id(COLLECTION_URL)
+    console.log(jobs_id.length)
 
-        const jobs_id = await get_jobs_id(COLLECTION_URL)
-        console.log(jobs_id.length)
-        for (let page_number = 0; page_number < (Math.round(jobs_id.length/100) + 2); page_number++) {
-            console.log(page_number)
-            let jobs_aux = []
-            let jobs_id_partition = jobs_id.slice(page_number*100, page_number*100 + 100)
+    for (let page_number = 0; page_number < (Math.round(jobs_id.length/100) + 2); page_number++) {
+        console.log(page_number)
+        let jobs_aux = []
+        let jobs_id_partition = jobs_id.slice(page_number*100, page_number*100 + 100)
+
+        try {
             jobs_id_partition.map(async job_id => {
                 jobs_aux.push(getJobAvail(job_id))
             })
             let jobs_avail = await Promise.all(jobs_aux)
             jobs_avail.map(job => patch_job(COLLECTION_URL, job))
-            await sleep(1000)
+        } catch(e) {
+            console.log(e)
         }
-
-    } catch(e) {
-        console.log(e)
+        await sleep(1000)
     }
+
 }
 
 async function sleep(miliseconds) {
