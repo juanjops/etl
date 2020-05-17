@@ -7,7 +7,6 @@ const COLLECTION_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences`
 const LINKEDIN_URL = "https://www.linkedin.com"
 
 const main = async () => {
-
     
     try {
 
