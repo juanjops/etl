@@ -105,4 +105,16 @@ router.patch("/datasciences_analysis/target/:job_id", async (req, res) => {
     }
 })
 
+router.patch("/datasciences_analysis/available/:job_id", async (req, res) => {
+    try {
+        const job = await dataScience.updateOne(
+            {job_id: req.params.job_id},
+            {available: req.body.available},
+            {new: true, runValidators: true})
+        res.send(job)
+    } catch(e) {
+        res.status(400).send(e)
+    }
+})
+
 module.exports = router

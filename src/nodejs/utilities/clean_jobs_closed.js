@@ -6,6 +6,8 @@ const httpsProxyAgent = require('https-proxy-agent')
 
 const COLLECTION_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences`
 
+const COLLECTION_ANALYSIS_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences_analysis`
+
 const LINKEDIN_URL = "https://www.linkedin.com"
 
 const agent = new httpProxyAgent("184.75.210.62:80")
@@ -27,6 +29,7 @@ const main = async () => {
             })
             let jobs_avail = await Promise.all(jobs_aux)
             jobs_avail.map(job => patch_job(COLLECTION_URL, job))
+            jobs_avail.map(job => patch_job(COLLECTION_ANALYSIS_URL, job))
         } catch(e) {
             console.log(e)
         }
