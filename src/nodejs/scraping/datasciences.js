@@ -3,6 +3,12 @@ const cheerio = require("cheerio")
 const axios = require("axios")
 const C = require("../constants.js")
 
+const JOB_SEARCH_SPECS = {
+    "key_words": "data science",
+    "location" : "London",
+    "time_range": "Past Week"
+}
+
 const TIMES_PARAMETERS = {
     "Past 24 hours": "r86400",
     "Past Week": "r604800",
@@ -23,7 +29,7 @@ const main = async (jobs_search_specs) => {
         for (let page_number = 0; page_number < (jobs_id.length/100).toFixed(0) + 2; page_number++) {
             let jobs_id_partition = jobs_id.slice(page_number*100, page_number*100 + 100)
             jobs_id_partition.map(job_id => getJobContent(job_id))
-            await sleep(1000)
+            await sleep(500)
         }
     } catch (e) {
         console.log(e)
@@ -137,11 +143,5 @@ const getJobContent = async (job_id) => {
 
 }
 
-
-const JOB_SEARCH_SPECS = {
-    "key_words": "data science",
-    "location" : "London",
-    "time_range": "Past 24 hours"
-}
 
 main(JOB_SEARCH_SPECS)

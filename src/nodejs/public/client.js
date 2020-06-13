@@ -13,7 +13,6 @@ loadJobs.addEventListener("click", async (e) => {
 
   let i = 0
   let job_id = 0
-
   
   try {
 

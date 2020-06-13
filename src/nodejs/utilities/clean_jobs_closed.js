@@ -1,10 +1,15 @@
 const axios = require("axios")
 const C = require("../constants.js")
 const cheerio = require("cheerio")
+const httpProxyAgent = require('http-proxy-agent')
+const httpsProxyAgent = require('https-proxy-agent')
 
 const COLLECTION_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences`
 
 const LINKEDIN_URL = "https://www.linkedin.com"
+
+const agent = new httpProxyAgent("184.75.210.62:80")
+// const agent = new httpsProxyAgent("184.75.210.62:80")
 
 const main = async () => {
     
@@ -48,7 +53,10 @@ async function get_jobs_id(collection_url) {
 async function getJobAvail(job_id) {
 
     try {
-        const res_job = await axios.get(LINKEDIN_URL + "/jobs/view/" + job_id)
+        const res_job = await axios.get(
+            LINKEDIN_URL + "/jobs/view/" + job_id, {   
+                httpAgent: agent
+            })
         const $ = cheerio.load(res_job.data)
         const title = $(".apply-button").text()
         if (title === "") {
