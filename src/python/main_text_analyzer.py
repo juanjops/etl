@@ -106,11 +106,11 @@ def create_analysis(db):
     jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]
     print("jobs to analyzed: ", len(jobs_id_not_analyzed))
     jobs = list(db[COLLECTION].find(
-        {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1}))
+        {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1, "available":1}))
     for job in jobs:
         get_job_analysis(job)
         db[ANALYSYS_COLLECTION].insert_one(job)
-    print("finish time: ",datetime.datetime.now())
+    print("finish time: ", datetime.datetime.now())
 
 
 if __name__ == "__main__":

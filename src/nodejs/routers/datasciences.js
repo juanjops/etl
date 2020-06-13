@@ -85,7 +85,7 @@ router.get("/datasciences_analysis/target", async (req, res) => {
             {target: {$eq: null}},
             null,
             {limit: 25,
-            sort: {ML: -1, Math: -1, BI: -1, Big_D: -1, CI_CD: -1, Serv: -1}})
+            sort: {available:1, ML: -1, Math: -1, BI: -1, Big_D: -1, CI_CD: -1, Serv: -1}})
         res.send(jobs)
     } catch (e) {
         res.status(400).send()
