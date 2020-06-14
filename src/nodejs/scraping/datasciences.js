@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer")
 const cheerio = require("cheerio")
 const axios = require("axios")
 const C = require("../constants.js")
+const httpProxyAgent = require('http-proxy-agent')
 
 const JOB_SEARCH_SPECS = {
     "key_words": "data science",
@@ -21,6 +22,8 @@ const SECS = 3
 const LINKEDIN_URL = "https://www.linkedin.com"
 
 const post_url = `http://127.0.0.1:${C.SERVER_PORT}/datasciences`
+
+const agent = new httpProxyAgent(C.PROXY)
 
 const main = async (jobs_search_specs) => {
     try {
@@ -125,7 +128,10 @@ const getJobContent = async (job_id) => {
 
     try {
         
-        const res_job = await axios.get(LINKEDIN_URL + "/jobs/view/" + job_id)
+        const res_job = await axios.get(
+            LINKEDIN_URL + "/jobs/view/" + job_id, {   
+                httpAgent: agent
+            })
         
         const $ = cheerio.load(res_job.data)
         const title = $(".topcard__title").text()

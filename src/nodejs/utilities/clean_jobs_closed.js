@@ -10,7 +10,7 @@ const COLLECTION_ANALYSIS_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences_
 
 const LINKEDIN_URL = "https://www.linkedin.com"
 
-const agent = new httpProxyAgent("184.75.210.62:80")
+const agent = new httpProxyAgent(C.PROXY)
 // const agent = new httpsProxyAgent("184.75.210.62:80")
 
 const main = async () => {
