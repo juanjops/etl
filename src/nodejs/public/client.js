@@ -5,9 +5,11 @@ const loadJobs = document.getElementById("Load-Button")
 const yesButton = document.getElementById('Yes-Button')
 const NoButton = document.getElementById('No-Button')
 const text = document.getElementById('text')
+const experience = document.getElementById('experience')
 
 const BASE_URL = 'http://localhost:3000/datasciences_analysis/target'
 const BASE_URL_TEXT = 'http://localhost:3000/datasciences/text'
+const BASE_URL_EXPERIENCE = 'http://localhost:3000/datasciences_analysis/experience'
 
 loadJobs.addEventListener("click", async (e) => {
 
@@ -19,8 +21,10 @@ loadJobs.addEventListener("click", async (e) => {
     const jobs = await axios.get(BASE_URL)
 
     job_id = jobs.data[i].job_id
-    let job = await axios.get(BASE_URL_TEXT + "/" + job_id)
-    text.textContent = job.data.text
+    let job_text = await axios.get(BASE_URL_TEXT + "/" + job_id)
+    text.textContent = job_text.data.text
+    let job_experience = await axios.get(BASE_URL_EXPERIENCE + "/" + job_id)
+    experience.textContent = job_experience.data.experience
 
     yesButton.addEventListener("click",async (e) => {
       e.preventDefault()
@@ -28,8 +32,10 @@ loadJobs.addEventListener("click", async (e) => {
       i++
       text.textContent = 'Loading...'
       job_id = jobs.data[i].job_id
-      let job = await axios.get(BASE_URL_TEXT + "/" + job_id)
-      text.textContent = job.data.text
+      let job_text = await axios.get(BASE_URL_TEXT + "/" + job_id)
+      text.textContent = job_text.data.text
+      let job_experience = await axios.get(BASE_URL_EXPERIENCE + "/" + job_id)
+      experience.textContent = job_experience.data.experience
       })
   
     NoButton.addEventListener("click",async (e) => {
@@ -38,8 +44,10 @@ loadJobs.addEventListener("click", async (e) => {
       i++
       text.textContent = 'Loading...'
       job_id = jobs.data[i].job_id
-      let job = await axios.get(BASE_URL_TEXT + "/" + job_id)
-      text.textContent = job.data.text
+      let job_text = await axios.get(BASE_URL_TEXT + "/" + job_id)
+      text.textContent = job_text.data.text
+      let job_experience = await axios.get(BASE_URL_EXPERIENCE + "/" + job_id)
+      experience.textContent = job_experience.data.experience
       })
 
   } catch(e) {
