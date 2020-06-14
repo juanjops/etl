@@ -7,7 +7,7 @@ const httpProxyAgent = require('http-proxy-agent')
 const JOB_SEARCH_SPECS = {
     "key_words": "data science",
     "location" : "London",
-    "time_range": "Past Week"
+    "time_range": "Past 24 hours"
 }
 
 const TIMES_PARAMETERS = {

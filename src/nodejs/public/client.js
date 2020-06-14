@@ -49,9 +49,10 @@ loadJobs.addEventListener("click", async (e) => {
   
     NoButton.addEventListener("click",async (e) => {
       e.preventDefault()
-      await axios.patch(BASE_URL +"/" + job_id, {job_id, target: "NO"})
+      await axios.patch(BASE_URL + "/" + job_id, {job_id, target: "NO"})
       i++
       text.textContent = 'Loading...'
+      job_id = jobs.data[i].job_id
       let job_text = await axios.get(BASE_URL_TEXT + "/" + job_id)
       text.textContent = job_text.data.text
       company.textContent = job_text.data.company
