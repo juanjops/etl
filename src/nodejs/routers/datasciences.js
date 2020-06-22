@@ -52,18 +52,6 @@ router.get("/datasciences/text/:job_id", async (req, res) => {
 
 })
 
-router.patch("/datasciences/available/:job_id", async (req, res) => {
-    try {
-        const job = await dataScience.updateOne(
-            {job_id: req.params.job_id},
-            {available: req.body.available},
-            {new: true, runValidators: true})
-        res.send(job)
-    } catch(e) {
-        res.status(400).send(e)
-    }
-})
-
 router.get("/datasciences/available/:available", async (req, res) => {
 
     try {
@@ -76,6 +64,18 @@ router.get("/datasciences/available/:available", async (req, res) => {
         res.status(500).send()
     }
 
+})
+
+router.patch("/datasciences/available/:job_id", async (req, res) => {
+    try {
+        const job = await dataScience.updateOne(
+            {job_id: req.params.job_id},
+            {available: req.body.available, link: req.body.link},
+            {new: true, runValidators: true})
+        res.send(job)
+    } catch(e) {
+        res.status(400).send(e)
+    }
 })
 
 router.get("/datasciences_analysis/target", async (req, res) => {

@@ -6,11 +6,9 @@ const httpsProxyAgent = require('https-proxy-agent')
 
 const COLLECTION_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences`
 
-const COLLECTION_ANALYSIS_URL = `http://127.0.0.1:${C.SERVER_PORT}/datasciences_analysis`
-
 const LINKEDIN_URL = "https://www.linkedin.com"
 
-const agent = new httpProxyAgent(C.PROXY)
+const agent = new httpsProxyAgent(C.PROXY)
 // const agent = new httpsProxyAgent("184.75.210.62:80")
 
 const main = async () => {
@@ -28,8 +26,7 @@ const main = async () => {
                 jobs_aux.push(getJobAvail(job_id))
             })
             let jobs_avail = await Promise.all(jobs_aux)
-            jobs_avail.map(job => patch_job(COLLECTION_URL, job))
-            jobs_avail.map(job => patch_job(COLLECTION_ANALYSIS_URL, job))
+            jobs_avail.map(job => patch_available_job(COLLECTION_URL, job))
         } catch(e) {
             console.log(e)
         }
@@ -62,6 +59,7 @@ async function getJobAvail(job_id) {
             })
         const $ = cheerio.load(res_job.data)
         const title = $(".apply-button").text()
+        const link = $(".apply-button").attr("href")
         if (title === "") {
             return {
                 job_id: job_id,
@@ -70,7 +68,8 @@ async function getJobAvail(job_id) {
         } else {
             return {
                 job_id: job_id,
-                available: "Available"
+                available: "Available",
+                link: link
             }
         }
     } catch(e) {
@@ -78,7 +77,7 @@ async function getJobAvail(job_id) {
     }
 }
 
-async function patch_job(collection_url, job) {
+async function patch_available_job(collection_url, job) {
 
     try {
         const job_url = collection_url + "/available/" + job.job_id

@@ -28,6 +28,7 @@ const agent = new httpProxyAgent(C.PROXY)
 const main = async (jobs_search_specs) => {
     try {
         const jobs_id = await getJobsId(jobs_search_specs)
+        // const jobs_id = ["1912256951"]
         console.log("Scraped Jobs: " + jobs_id.length.toString())
         for (let page_number = 0; page_number < (jobs_id.length/100).toFixed(0) + 2; page_number++) {
             let jobs_id_partition = jobs_id.slice(page_number*100, page_number*100 + 100)
@@ -140,8 +141,9 @@ const getJobContent = async (job_id) => {
         const text = $(".description__text").text()
         const level = $($(".job-criteria__list span")[1]).text()
         const type = $($(".job-criteria__list span")[2]).text()
+        const link = $(".apply-button").attr("href")
 
-        await axios.post(post_url, {job_id, title, company, location, text, level, type})
+        await axios.post(post_url, {job_id, title, company, location, text, level, type, link})
 
     } catch (e) {
         console.log("Error in job_id " + job_id)

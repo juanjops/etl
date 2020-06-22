@@ -11,7 +11,9 @@ const dataScience = mongoose.model("datasciences", {
     level: {type: String, trim: true},
     type: {type: String, trim: true},
     available: {type: String, trim: true, default: "Available"},
-    target: {type: String, trim: true}},
+    target: {type: String, trim: true},
+    link: {type: String}
+    },
     "datasciences"
 )
 
@@ -28,7 +30,8 @@ const dataScience_analysis = mongoose.model("datasciences_analysis", {
     CI_CD: {type: Number},
     Serv: {type: Number},
     Language: {type: String,trim: true},
-    target: {type: String,trim: true}},
+    target: {type: String,trim: true},
+    },
     "datasciences_analysis"
 )
 
