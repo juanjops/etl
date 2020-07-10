@@ -19,7 +19,8 @@
     "https-proxy-agent": "^5.0.0",
     "mongoose": "^5.9.10",
     "puppeteer": "^3.0.2",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "twitter": "^1.7.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.3",

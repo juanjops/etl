@@ -5,6 +5,7 @@ require("./db/mongoose")
 const dataScience = require("./routers/datasciences.js")
 const marketingRouter = require("./routers/marketings.js")
 const clickRouter = require("./routers/click.js")
+const twitter = require("./routers/tweets.js")
 
 const app = express()
 const port = process.env.PORT || C.SERVER_PORT
@@ -16,6 +17,8 @@ app.use(dataScience)
 app.use(marketingRouter)
 
 app.use(clickRouter)
+
+app.use(twitter)
 
 app.use(express.static(path.join(__dirname, "./public")))
 
