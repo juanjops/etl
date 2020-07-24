@@ -58,7 +58,8 @@ async function getJobAvail(job_id) {
                 httpAgent: agent
             })
         const $ = cheerio.load(res_job.data)
-        const title = $(".apply-button").text()
+        const title = $(".topcard__content-right").text()
+        console.log(title)
         const link = $(".apply-button").attr("href")
         if (title === "") {
             return {
@@ -73,7 +74,10 @@ async function getJobAvail(job_id) {
             }
         }
     } catch(e) {
-        console.log("Error in job_id " + job_id)
+        return {
+            job_id: job_id,
+            available: "Not Available"
+        }
     }
 }
 

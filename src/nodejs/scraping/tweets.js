@@ -43,7 +43,7 @@ async function get_friends(user) {
 async function load_user_tweets(user) {
     
     try {
-        const tweets = await client.get('statuses/user_timeline', {screen_name: user, count: 10})
+        const tweets = await client.get('statuses/user_timeline', {screen_name: user, count: 200})
         await Promise.all(tweets.map(tweet => load_tweet(user, tweet)))
     } catch {
         console.log(error)
@@ -59,7 +59,8 @@ async function load_tweet(user, tweet) {
             id_str: tweet.id_str, 
             text: tweet.text, 
             screen_name: user, 
-            created_at: tweet.created_at})
+            created_at: tweet.created_at
+        })
 
     } catch {
         console.log("post fail to server")
