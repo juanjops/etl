@@ -59,7 +59,6 @@ async function getJobAvail(job_id) {
             })
         const $ = cheerio.load(res_job.data)
         const title = $(".topcard__content-right").text()
-        console.log(title)
         const link = $(".apply-button").attr("href")
         if (title === "") {
             return {
