@@ -45,8 +45,44 @@ KEY_WORDS = {
     ]
 }
 
-
 TEXT_ANALYZER = JobsWords(KEY_WORDS, MODELS)
+
+
+def create_analysis(db):
+
+    print("start time: ", datetime.datetime.now())
+    delete_repeated_jobs(db, COLLECTION)
+    print("raw collection jobs: ", db[COLLECTION].count_documents({}))
+    jobs_id = [job["job_id"] for job in list(
+        db[COLLECTION].find({}, {"job_id":1}))] 
+    jobs_id_already_analyzed = [job["job_id"] for job in list(
+        db[ANALYSYS_COLLECTION].find({}, {"job_id":1}))]
+    print("jobs already analyzed: ", len(jobs_id_already_analyzed))
+    jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]
+    print("jobs to analyzed: ", len(jobs_id_not_analyzed))
+    jobs = list(db[COLLECTION].find(
+        {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1, "available":1}))
+    for job in jobs:
+        get_job_analysis(job)
+        db[ANALYSYS_COLLECTION].insert_one(job)
+    print("finish time: ", datetime.datetime.now())
+
+
+def delete_repeated_jobs(db, collection):
+
+    db[collection].aggregate(	
+    [ 	
+        { "$sort": { "_id": 1 } }, 	
+        { "$group": { 	
+            "_id": "$job_id", 	
+            "doc": { "$first": "$$ROOT" } 	
+        }}, 	
+        { "$replaceRoot": { "newRoot": "$doc" } },	
+        { "$out": "auxiliar_collection"}	
+    ])
+
+    db[collection].drop()
+    db["auxiliar_collection"].rename(collection)
 
 
 def get_job_analysis(job):
@@ -74,43 +110,6 @@ def get_job_analysis(job):
         job["CI_CD"] = None
         job["Serv"] = None
         job["language"] = None
-
-
-def delete_repeated_jobs(db, collection):
-
-    db[collection].aggregate(	
-    [ 	
-        { "$sort": { "_id": 1 } }, 	
-        { "$group": { 	
-            "_id": "$job_id", 	
-            "doc": { "$first": "$$ROOT" } 	
-        }}, 	
-        { "$replaceRoot": { "newRoot": "$doc" } },	
-        { "$out": "auxiliar_collection"}	
-    ])
-
-    db[collection].drop()
-    db["auxiliar_collection"].rename(collection)
-
-
-def create_analysis(db):
-
-    print("start time: ", datetime.datetime.now())
-    delete_repeated_jobs(db, COLLECTION)
-    print("raw collection jobs: ", db[COLLECTION].count_documents({}))
-    jobs_id = [job["job_id"] for job in list(
-        db[COLLECTION].find({}, {"job_id":1}))] 
-    jobs_id_already_analyzed = [job["job_id"] for job in list(
-        db[ANALYSYS_COLLECTION].find({}, {"job_id":1}))]
-    print("jobs already analyzed: ", len(jobs_id_already_analyzed))
-    jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]
-    print("jobs to analyzed: ", len(jobs_id_not_analyzed))
-    jobs = list(db[COLLECTION].find(
-        {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1, "available":1}))
-    for job in jobs:
-        get_job_analysis(job)
-        db[ANALYSYS_COLLECTION].insert_one(job)
-    print("finish time: ", datetime.datetime.now())
 
 
 if __name__ == "__main__":

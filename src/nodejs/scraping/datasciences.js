@@ -1,13 +1,15 @@
+const args = require('yargs').argv
 const puppeteer = require("puppeteer")
 const cheerio = require("cheerio")
 const axios = require("axios")
 const C = require("../constants.js")
 const httpProxyAgent = require('http-proxy-agent')
 
+
 const JOB_SEARCH_SPECS = {
-    "key_words": "data science",
-    "location" : "London",
-    "time_range": "Past 24 hours"
+    "key_words": args.key_words,
+    "location" : args.location,
+    "time_range": args.time_range
 }
 
 const TIMES_PARAMETERS = {

@@ -1,7 +1,7 @@
 const SERVER_PORT = 3000
 
 // check list in https://free-proxy-list.net/
-const PROXY = "103.112.163.245:8080"
+const PROXY = "185.202.165.1:53281"
 
 const USER = "juanjose.pardo.s@gmail.com"
 
