@@ -1,7 +1,7 @@
 from neo4j import GraphDatabase
 
 
-class neo4j_connector:
+class Neo4jConnector:
 
     def __init__(self, uri, user, password):
 
@@ -16,11 +16,11 @@ class neo4j_connector:
         with self.driver.session() as session:
 
             session.write_transaction(self._create_query_user, user)
-    
-    @staticmethod
-    def _create_query_user(tx, user):
 
-        tx.run(
+    @staticmethod
+    def _create_query_user(transfer, user):
+
+        transfer.run(
             "MERGE (program:Program {name: $user}) "
             "RETURN program", user=user)
 
@@ -29,11 +29,11 @@ class neo4j_connector:
         with self.driver.session() as session:
 
             session.write_transaction(self._create_query_relationship, user, following, weight)
-    
-    @staticmethod
-    def _create_query_relationship(tx, user, following, weight):
 
-        tx.run(
+    @staticmethod
+    def _create_query_relationship(transfer, user, following, weight):
+
+        transfer.run(
             "MATCH (a:Program{name: $user}), (b:Program{name: $following}) "
             "MERGE (a)-[:SHARE {weight: $weight}]->(b) "
             "RETURN a, b ", user=user, following=following, weight=weight)

@@ -1,14 +1,12 @@
-from pymongo import MongoClient
-import pandas as pd
-from bson.objectid import ObjectId
 import datetime
-from text_analyzer import JobsWords
-import json
+from pymongo import MongoClient
 import en_core_web_sm
 import es_core_news_sm
+from text_analyzer import JobsWords
 
 
-DB_URL = 'mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/jobs?retryWrites=true&w=majority'
+DB_URL = ("mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fk" +
+          "x.mongodb.net/jobs?retryWrites=true&w=majority")
 DATA_BASE = "jobs"
 COLLECTION = "datasciences"
 ANALYSYS_COLLECTION = COLLECTION + "_analysis"
@@ -27,20 +25,23 @@ KEY_WORDS = {
         "matlab", "ai", "mathematic"
     ],
     "BI": [
-        "sql", "no sql", "qlik", "tableau", "powerbi", "qlikview", "qliksense", "kibana", "dashboard",
-        "visualisation", "bi"
+        "sql", "no sql", "qlik", "tableau", "powerbi", "qlikview", "qliksense",
+        "kibana", "dashboard", "visualisation", "bi"
     ],
     "Big_D": [
-        "scala", "impala", "spark", "hive", "kudu", "kafka", "hadoop", "sqoop", "mongo", "flume", "nifi", "ssas", "hdfs",
+        "scala", "impala", "spark", "hive", "kudu", "kafka", "hadoop", "sqoop",
+        "mongo", "flume", "nifi", "ssas", "hdfs",
         "postgre", "pyspark", "lucene", "redis", "kinesis"
     ],
     "CI_CD": [
-        "ab initio", "cloudera", "gcp", "databricks", "knime", "qubole", "b2b", "agile", "aws", "azure", 
-        "gitlab", "github", "jira", "confluence", "angular", "bitbucket"
+        "ab initio", "cloudera", "gcp", "databricks", "knime", "qubole", "b2b",
+        "agile", "aws", "azure", "gitlab", "github", "jira", "confluence",
+        "angular", "bitbucket"
     ],
     "Serv": [
-        "java", "kotlin", "javascript", "node", "clojure", "neo", "blockchain", " api", "etl", "kpi", "crm",
-        "backend", "frontend", "virtualization", "micromanagement", "docker", "kubernetes", "ansible", "jenkins",
+        "java", "kotlin", "javascript", "node", "clojure", "neo", "blockchain",
+        " api", "etl", "kpi", "crm", "backend", "frontend", "virtualization",
+        "micromanagement", "docker", "kubernetes", "ansible", "jenkins",
         "kubeflow", "sagemaker", "redux"
     ]
 }
@@ -48,41 +49,39 @@ KEY_WORDS = {
 TEXT_ANALYZER = JobsWords(KEY_WORDS, MODELS)
 
 
-def create_analysis(db):
+def create_analysis(data_base):
 
     print("start time: ", datetime.datetime.now())
-    delete_repeated_jobs(db, COLLECTION)
-    print("raw collection jobs: ", db[COLLECTION].count_documents({}))
+    delete_repeated_jobs(data_base, COLLECTION)
+    print("raw collection jobs: ", data_base[COLLECTION].count_documents({}))
     jobs_id = [job["job_id"] for job in list(
-        db[COLLECTION].find({}, {"job_id":1}))] 
+        data_base[COLLECTION].find({}, {"job_id":1}))]
     jobs_id_already_analyzed = [job["job_id"] for job in list(
-        db[ANALYSYS_COLLECTION].find({}, {"job_id":1}))]
+        data_base[ANALYSYS_COLLECTION].find({}, {"job_id":1}))]
     print("jobs already analyzed: ", len(jobs_id_already_analyzed))
     jobs_id_not_analyzed = [job_id for job_id in jobs_id if job_id not in jobs_id_already_analyzed]
     print("jobs to analyzed: ", len(jobs_id_not_analyzed))
-    jobs = list(db[COLLECTION].find(
+    jobs = list(data_base[COLLECTION].find(
         {"job_id" : {"$in" : jobs_id_not_analyzed}}, {"job_id":1, "text":1, "available":1}))
     for job in jobs:
         get_job_analysis(job)
-        db[ANALYSYS_COLLECTION].insert_one(job)
+        data_base[ANALYSYS_COLLECTION].insert_one(job)
     print("finish time: ", datetime.datetime.now())
 
 
-def delete_repeated_jobs(db, collection):
+def delete_repeated_jobs(data_base, collection):
 
-    db[collection].aggregate(	
-    [ 	
-        { "$sort": { "_id": 1 } }, 	
-        { "$group": { 	
-            "_id": "$job_id", 	
-            "doc": { "$first": "$$ROOT" } 	
-        }}, 	
-        { "$replaceRoot": { "newRoot": "$doc" } },	
-        { "$out": "auxiliar_collection"}	
+    data_base[collection].aggregate([
+        {"$sort": {"_id": 1}},
+        {"$group": {
+            "_id": "$job_id",
+            "doc": {"$first": "$$ROOT"}
+        }},
+        {"$replaceRoot": {"newRoot": "$doc"}},
+        {"$out": "auxiliar_collection"}
     ])
-
-    db[collection].drop()
-    db["auxiliar_collection"].rename(collection)
+    data_base[collection].drop()
+    data_base["auxiliar_collection"].rename(collection)
 
 
 def get_job_analysis(job):
@@ -99,7 +98,7 @@ def get_job_analysis(job):
         job["Serv"] = text_analysis[3]["Serv"]
         job["language"] = text_analysis[4]
         del job["text"]
-    except:
+    except: # pylint: disable=bare-except
         job["key_words"] = None
         job["misspelled_words"] = None
         job["experience"] = None
