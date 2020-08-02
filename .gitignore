@@ -1,3 +1,4 @@
 src/python/.etl/
 src/nodejs/node_modules/
 backup/
+src/python/__pycache__/
