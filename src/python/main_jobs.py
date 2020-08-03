@@ -1,75 +1,76 @@
-import itertools
 from pymongo import MongoClient
-import pandas as pd
-import numpy as np
+import en_core_web_sm
+import es_core_news_sm
 from neo4j_db import Neo4jConnector
+from text_analyzer import JobsWords
 
 
 DB_URL = ("mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fk" +
           "x.mongodb.net/jobs?retryWrites=true&w=majority")
 DATA_BASE = "jobs"
-COLLECTION = "datasciences_analysis"
+COLLECTION = "datasciences"
 URI = 'bolt://localhost:7687'
 USER = "neo4j"
-PASSWORD = "python"
+PASSWORD = "jobs"
+EN_NLP = en_core_web_sm.load()
+ES_NLP = es_core_news_sm.load()
+MODELS = {
+    "en": EN_NLP,
+    "es": ES_NLP
+}
+
+
+TEXT_ANALYZER = JobsWords("-", MODELS)
 
 
 def create_graph(data_base, neo4j):
 
     data_set = create_dataset(data_base)
-    number_of_elements = data_set.shape[0]
-    corr_matrix = get_corr_matrix(data_set)
-    insert_nodes(neo4j, corr_matrix)
-    insert_relationships(neo4j, corr_matrix, number_of_elements)
+    jobs_tokens = {
+        job_id: get_tokens(job_text) for job_id, job_text
+        in data_set.items() if job_text is not None}
+    insert_jobs(neo4j, jobs_tokens)
+    insert_words(neo4j, jobs_tokens)
+    insert_relationships(neo4j, jobs_tokens)
 
 
 def create_dataset(data_base):
 
-    jobs = list(data_base[COLLECTION].find({}))
-    data_analyzed = pd.DataFrame(jobs)
-    data_analyzed = data_analyzed[["job_id", "key_words"]]
-    cluster_data = pd.DataFrame(columns=["job_id", "key_word"])
-    shape = data_analyzed.shape[0]
-    for i in range(0, shape):
-        try:
-            words = data_analyzed.key_words[i].split(" ")
-            job_id = [data_analyzed.job_id[i]]*len(words)
-            xtra = {"job_id": job_id, "key_word": words}
-            cluster_data = cluster_data.append(pd.DataFrame(xtra))
-        except: # pylint: disable=bare-except
-            pass
-    cluster_data["value"] = 1
-    data_set = cluster_data.pivot_table(
-        index="job_id", columns="key_word", values="value", fill_value=0)
-    data_set = data_set.drop(columns=[""])
+    jobs = list(data_base[COLLECTION].find(
+        {}, {"job_id":1, "text":1}))
+    data_set = {job["job_id"]: job["text"] for job in jobs}
 
     return data_set
 
 
-def get_corr_matrix(data_set):
+def get_tokens(text):
 
-    return data_set.corr(method=create_histogram_intersection)
+    try:
+        language = TEXT_ANALYZER.get_language(text)
+        clean_text = TEXT_ANALYZER.get_reg(text)
+        tokens = TEXT_ANALYZER.get_tokens(language, clean_text)
+    except: # pylint: disable=bare-except
+        tokens = None
 
-
-def create_histogram_intersection(first_value, second_value):
-
-    minimum = np.minimum(first_value, second_value).sum().round(decimals=1)
-
-    return minimum
-
-
-def insert_nodes(neo4j, corr_matrix):
-
-    list(map(neo4j.insert_user, corr_matrix.columns))
+    return tokens
 
 
-def insert_relationships(neo4j, corr_matrix, number_of_elements):
+def insert_jobs(neo4j, jobs_tokens):
 
-    pair_elements = list(itertools.combinations(corr_matrix.columns, 2))
-    list(
-        map(lambda x: neo4j.insert_relationship(
-            x[0], x[1],
-            corr_matrix.loc[x[0], x[1]]/number_of_elements), pair_elements))
+    list(map(neo4j.insert_job, jobs_tokens.keys()))
+
+
+def insert_words(neo4j, jobs_tokens):
+
+    tokens = list(dict.fromkeys(sum(jobs_tokens.values(), [])))
+    list(map(neo4j.insert_word, tokens))
+
+
+def insert_relationships(neo4j, jobs_tokens):
+
+    for job_id, tokens in jobs_tokens.items():
+
+        list(map(lambda token, job=job_id: neo4j.insert_job_word_relationship(job, token), tokens))
 
 
 if __name__ == "__main__":

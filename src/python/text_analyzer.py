@@ -14,7 +14,7 @@ class JobsWords():
 
     def get_key_misspelled_words(self, text):
 
-        language = detect(text)
+        language = JobsWords.get_language(text)
         clean_text = JobsWords.get_reg(text)
         tokens = self.get_tokens(language, clean_text)
         selected_key_words = self.get_key_words(tokens)
@@ -28,6 +28,11 @@ class JobsWords():
             ".".join(sentence_experience),
             Counter(cluster),
             language)
+
+    @staticmethod
+    def get_language(text):
+
+        return detect(text)
 
     @staticmethod
     def get_reg(text):
