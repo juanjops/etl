@@ -35,7 +35,6 @@ const dataScience_analysis = mongoose.model("datasciences_analysis", {
     "datasciences_analysis"
 )
 
-
 module.exports = {
     dataScience,
     dataScience_analysis

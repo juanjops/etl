@@ -3,7 +3,7 @@ const express = require("express")
 const path = require("path")
 require("./db/mongoose")
 const dataScience = require("./routers/datasciences.js")
-const marketingRouter = require("./routers/marketings.js")
+const ireneRouter = require("./routers/irenes.js")
 const clickRouter = require("./routers/click.js")
 const twitter = require("./routers/tweets.js")
 
@@ -14,7 +14,7 @@ app.use(express.json())
 
 app.use(dataScience)
 
-app.use(marketingRouter)
+app.use(ireneRouter)
 
 app.use(clickRouter)
 

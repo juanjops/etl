@@ -64,8 +64,8 @@ const getJobsId = async (job_search_specs) => {
         const page = await browser.newPage()
     
         await page.goto(LINKEDIN_URL + "/login")
-        await page.type('#username', C.USER)
-        await page.type('#password', C.PASSWORD)
+        await page.type('#username', C.JUANJO_USER)
+        await page.type('#password', C.JUANJO_PASSWORD)
         await page.click(".from__button--floating")
         await page.waitForNavigation()
         for (let page_number = 1; page_number < 40; page_number++) {

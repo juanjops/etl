@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const Marketing = mongoose.model("marketings", {
+const irenes = mongoose.model("irenes", {
 
     job_id: {type: String, required : true, trim: true},
     title: {type: String, trim: true},
@@ -11,8 +11,12 @@ const Marketing = mongoose.model("marketings", {
     level: {type: String, trim: true},
     type: {type: String, trim: true},
     available: {type: String, trim: true, default: "Available"},
-    target: {type: String, trim: true}},
-    "marketings"
+    target: {type: String, trim: true},
+    link: {type: String}
+    },
+    "irenes"
 )
 
-module.exports = Marketing
+module.exports = {
+    irenes
+}
