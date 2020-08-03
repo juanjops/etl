@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 import en_core_web_sm
-import es_core_news_sm
 from neo4j_db import Neo4jConnector
 from text_analyzer import JobsWords
 
@@ -13,10 +12,8 @@ URI = 'bolt://localhost:7687'
 USER = "neo4j"
 PASSWORD = "jobs"
 EN_NLP = en_core_web_sm.load()
-ES_NLP = es_core_news_sm.load()
 MODELS = {
-    "en": EN_NLP,
-    "es": ES_NLP
+    "en": EN_NLP
 }
 
 
