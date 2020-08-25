@@ -60,7 +60,7 @@ const getJobsId = async (job_search_specs) => {
 
     try {
 
-        const browser = await puppeteer.launch({headless: true})
+        const browser = await puppeteer.launch({headless: false})
         const page = await browser.newPage()
     
         await page.goto(LINKEDIN_URL + "/login")
@@ -115,15 +115,16 @@ async function getHtmlContent(page) {
     const html = await page.content()
     const $ = cheerio.load(html)
     $("div[data-job-id]").each((index, element) => {
-        jobs_id_page.push($(element).attr("data-job-id").split(":")[3])
+        jobs_id_page.push($(element).attr("data-job-id"))
     })
+    console.log(jobs_id_page)
     return jobs_id_page
 }
 
 async function getNumberJobs(page) {
     const html = await page.content()
     const $ = cheerio.load(html)
-    const jobs_number = $("div .jobs-search-two-pane__title-heading small").text().trim().split(" ")[0]
+    const jobs_number = $("div .jobs-search-results-list__title-heading small").text().trim().split(" ")[0]
     return jobs_number
 }
 

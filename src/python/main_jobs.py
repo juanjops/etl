@@ -17,15 +17,10 @@ MODELS = {
 }
 
 
-TEXT_ANALYZER = JobsWords("-", MODELS)
-
-
-def create_graph(data_base, neo4j):
+def create_graph(data_base, text_analyzer, neo4j):
 
     data_set = create_dataset(data_base)
-    jobs_tokens = {
-        job_id: get_tokens(job_text) for job_id, job_text
-        in data_set.items() if job_text is not None}
+    jobs_tokens = get_tokens(data_set, text_analyzer)
     insert_jobs(neo4j, jobs_tokens)
     insert_words(neo4j, jobs_tokens)
     insert_relationships(neo4j, jobs_tokens)
@@ -40,12 +35,24 @@ def create_dataset(data_base):
     return data_set
 
 
-def get_tokens(text):
+def get_tokens(data_set, text_analyzer):
+
+    jobs_tokens = {
+        job_id: get_job_tokens(text_analyzer, job_text) for job_id, job_text
+        in data_set.items()}
+    jobs_tokens = {
+        job: tokens for job, tokens in jobs_tokens.items()
+        if tokens is not None}
+
+    return jobs_tokens
+
+
+def get_job_tokens(text_analyzer, text):
 
     try:
-        language = TEXT_ANALYZER.get_language(text)
-        clean_text = TEXT_ANALYZER.get_reg(text)
-        tokens = TEXT_ANALYZER.get_tokens(language, clean_text)
+        language = text_analyzer.get_language(text)
+        clean_text = text_analyzer.get_reg(text)
+        tokens = text_analyzer.get_tokens(language, clean_text)
     except: # pylint: disable=bare-except
         tokens = None
 
@@ -73,5 +80,6 @@ def insert_relationships(neo4j, jobs_tokens):
 if __name__ == "__main__":
 
     DB = MongoClient(DB_URL).get_database(DATA_BASE)
+    TEXT_ANALYZER = JobsWords("-", MODELS)
     NEO4J = Neo4jConnector(URI, USER, PASSWORD)
-    create_graph(DB, NEO4J)
+    create_graph(DB, TEXT_ANALYZER, NEO4J)
