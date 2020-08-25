@@ -116,7 +116,6 @@ async function getHtmlContent(page) {
     $("div[data-job-id]").each((index, element) => {
         jobs_id_page.push($(element).attr("data-job-id"))
     })
-    console.log(jobs_id_page)
     return jobs_id_page
 }
 
