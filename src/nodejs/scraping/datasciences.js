@@ -30,7 +30,6 @@ const agent = new httpProxyAgent(C.PROXY)
 const main = async (jobs_search_specs) => {
     try {
         const jobs_id = await getJobsId(jobs_search_specs)
-        // const jobs_id = ["1912256951"]
         console.log("Scraped Jobs: " + jobs_id.length.toString())
         for (let page_number = 0; page_number < (jobs_id.length/100).toFixed(0) + 2; page_number++) {
             let jobs_id_partition = jobs_id.slice(page_number*100, page_number*100 + 100)
@@ -60,7 +59,7 @@ const getJobsId = async (job_search_specs) => {
 
     try {
 
-        const browser = await puppeteer.launch({headless: false})
+        const browser = await puppeteer.launch({headless: true})
         const page = await browser.newPage()
     
         await page.goto(LINKEDIN_URL + "/login")
