@@ -23,6 +23,8 @@ class JobsWords():
         cluster = self.get_cluster(tokens)
 
         return (
+            language,
+            " ".join(tokens),
             " ".join(selected_key_words),
             " ".join(misspelled_words),
             ".".join(sentence_experience),

@@ -87,18 +87,22 @@ def delete_repeated_jobs(data_base, collection):
 def get_job_analysis(job):
     try:
         text_analysis = TEXT_ANALYZER.get_key_misspelled_words(job["text"])
-        job["key_words"] = text_analysis[0]
-        job["misspelled_words"] = text_analysis[1]
-        job["experience"] = text_analysis[2]
-        job["ML"] = text_analysis[3]["ML"]
-        job["Math"] = text_analysis[3]["Math"]
-        job["BI"] = text_analysis[3]["BI"]
-        job["Big_D"] = text_analysis[3]["Big_D"]
-        job["CI_CD"] = text_analysis[3]["CI/CD"]
-        job["Serv"] = text_analysis[3]["Serv"]
-        job["language"] = text_analysis[4]
+        job["language"] = text_analysis[0]
+        job["tokens"] = text_analysis[1]
+        job["key_words"] = text_analysis[2]
+        job["misspelled_words"] = text_analysis[3]
+        job["experience"] = text_analysis[4]
+        job["ML"] = text_analysis[5]["ML"]
+        job["Math"] = text_analysis[5]["Math"]
+        job["BI"] = text_analysis[5]["BI"]
+        job["Big_D"] = text_analysis[5]["Big_D"]
+        job["CI_CD"] = text_analysis[5]["CI/CD"]
+        job["Serv"] = text_analysis[5]["Serv"]
+        job["language"] = text_analysis[6]
         del job["text"]
     except: # pylint: disable=bare-except
+        job["language"] = None
+        job["tokens"] = None
         job["key_words"] = None
         job["misspelled_words"] = None
         job["experience"] = None
