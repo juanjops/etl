@@ -61,14 +61,12 @@ const getJobsId = async (job_search_specs) => {
 
         const browser = await puppeteer.launch({headless: true})
         const page = await browser.newPage()
-    
         await page.goto(LINKEDIN_URL + "/login")
         await page.type('#username', C.JUANJO_USER)
         await page.type('#password', C.JUANJO_PASSWORD)
         await page.click(".from__button--floating")
         await page.waitForNavigation()
         for (let page_number = 1; page_number < 40; page_number++) {
-            console.log(page_number)
             let job_url = (
                 LINKEDIN_URL + "/jobs/search/?" + "f_E=2%2C3%2C4" +
                 "&f_TPR=" + 
@@ -94,7 +92,6 @@ const getJobsId = async (job_search_specs) => {
             } else {
                 jobs_id = jobs_id.concat(jobs_id_page)
             }
-            console.log(jobs_id)
         }
         await browser.close()
     
