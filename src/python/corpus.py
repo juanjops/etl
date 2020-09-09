@@ -19,7 +19,8 @@ class SklearnTopicModels():
         }
 
         self.model_options = {
-            "LDA": LatentDirichletAllocation(n_components=n_clusters, random_state=self.RANDOM_STATE),
+            "LDA": LatentDirichletAllocation(
+                n_components=n_clusters, random_state=self.RANDOM_STATE),
             "LSA": TruncatedSVD(n_components=n_clusters, random_state=self.RANDOM_STATE),
             "NMF": NMF(n_components=n_clusters, random_state=self.RANDOM_STATE)
         }
@@ -51,9 +52,15 @@ class SklearnTopicModels():
         """
         mds can be pca as default or tsne or mmds
         """
-        pyLDAvis.enable_notebook()
-        vectorizer = self.model.named_steps["vect"]
-        vocab = self.model.named_steps['vect'].fit_transform(documents)
-        model = self.model.named_steps['model'].fit(vocab)
+        try:
 
-        return pyLDAvis.sklearn.prepare(model, vocab, vectorizer, mds=mds)
+            pyLDAvis.enable_notebook()
+            vectorizer = self.model.named_steps["vect"]
+            vocab = self.model.named_steps['vect'].fit_transform(documents)
+            model = self.model.named_steps['model'].fit(vocab)
+
+            return pyLDAvis.sklearn.prepare(model, vocab, vectorizer, mds=mds)
+
+        except:
+
+            print("ERROR pyLDAvis cannot print this model")
