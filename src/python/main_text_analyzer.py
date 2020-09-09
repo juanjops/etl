@@ -99,6 +99,7 @@ def get_job_analysis(job):
         job["CI_CD"] = text_analysis[5]["CI/CD"]
         job["Serv"] = text_analysis[5]["Serv"]
         job["language"] = text_analysis[6]
+        job["salary"] = text_analysis[7]
         del job["text"]
     except: # pylint: disable=bare-except
         job["language"] = None
@@ -113,6 +114,7 @@ def get_job_analysis(job):
         job["CI_CD"] = None
         job["Serv"] = None
         job["language"] = None
+        job["salary"] = None
 
 
 if __name__ == "__main__":

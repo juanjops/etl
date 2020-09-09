@@ -21,6 +21,7 @@ class JobsWords():
         misspelled_words = JobsWords.get_misspelled_words(language, tokens, selected_key_words)
         sentence_experience = self.get_sentence_word_related(language, text, "Experience")
         cluster = self.get_cluster(tokens)
+        salary = JobsWords.get_salary(text)
 
         return (
             language,
@@ -29,7 +30,8 @@ class JobsWords():
             " ".join(misspelled_words),
             ".".join(sentence_experience),
             Counter(cluster),
-            language)
+            language,
+            salary)
 
     @staticmethod
     def get_language(text):
@@ -114,3 +116,10 @@ class JobsWords():
         cluster = list(chain(*cluster))
 
         return cluster
+
+    @staticmethod
+    def get_salary(text):
+
+        salary = re.search(r'([CHF|$|£|€])([0-9]*[.,]?[0-9]*\Z|[0-9]*k|[0-9])', text)
+
+        return salary.group(2)
