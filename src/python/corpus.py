@@ -6,52 +6,54 @@ import pyLDAvis.sklearn
 
 
 class SklearnTopicModels():
-    
-    def __init__(self, n_clusters, vectorizer, estimator, mds):
+
+    RANDOM_STATE = 42
+
+    def __init__(self, n_clusters, vectorizer, estimator):
         """
         n_clusters is the desired number of topics
         """
-        self.vect = {
+        self.vector_options = {
             "Count": CountVectorizer(binary=True),
             "Tfidf": TfidfVectorizer()
         }
-        
-        self.model_dict = {
-            "LDA": LatentDirichletAllocation(n_components=n_clusters),
-            "LSA": TruncatedSVD(n_components=n_clusters),
-            "NMF": NMF(n_components=n_clusters)
+
+        self.model_options = {
+            "LDA": LatentDirichletAllocation(n_components=n_clusters, random_state=self.RANDOM_STATE),
+            "LSA": TruncatedSVD(n_components=n_clusters, random_state=self.RANDOM_STATE),
+            "NMF": NMF(n_components=n_clusters, random_state=self.RANDOM_STATE)
         }
-            
+
         self.model = Pipeline([
-            ('vect', self.vect[vectorizer]),
-            ('model', self.model_dict[estimator])
+            ('vect', self.vector_options[vectorizer]),
+            ('model', self.model_options[estimator])
         ])
-        
-        self.mds = mds
-    
+
     def fit_transform(self, documents):
         self.model.fit_transform(documents)
         return self.model
 
-    def get_topics(self, n=25):
+    def get_topics(self, n_top_words=25):
         """
-        n is the number of top terms to show for each topic
+        n_top_words is the number of top terms to show for each topic
         """
         vectorizer = self.model.named_steps['vect']
         model = self.model.steps[-1][1]
         names = vectorizer.get_feature_names()
         topics = dict()
         for idx, topic in enumerate(model.components_):
-            features = topic.argsort()[:-(n - 1): -1]
+            features = topic.argsort()[:-(n_top_words - 1): -1]
             tokens = [names[i] for i in features]
             topics[idx] = tokens
         return topics
-    
-    def get_plot(self, documents):
-        
+
+    def get_plot(self, documents, mds):
+        """
+        mds can be pca as default or tsne or mmds
+        """
         pyLDAvis.enable_notebook()
         vectorizer = self.model.named_steps["vect"]
         vocab = self.model.named_steps['vect'].fit_transform(documents)
         model = self.model.named_steps['model'].fit(vocab)
 
-        return pyLDAvis.sklearn.prepare(model, vocab, vectorizer, mds=self.mds)
+        return pyLDAvis.sklearn.prepare(model, vocab, vectorizer, mds=mds)
