@@ -3,6 +3,7 @@ from sklearn.decomposition import LatentDirichletAllocation, TruncatedSVD, NMF
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import pyLDAvis
 import pyLDAvis.sklearn
+import pandas as pd
 
 
 class SklearnTopicModels():
@@ -46,7 +47,7 @@ class SklearnTopicModels():
             features = topic.argsort()[:-(n_top_words - 1): -1]
             tokens = [names[i] for i in features]
             topics[idx] = tokens
-        return topics
+        return pd.DataFrame(topics)
 
     def get_plot(self, documents, mds):
         """
