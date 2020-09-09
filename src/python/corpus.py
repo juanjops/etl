@@ -19,7 +19,7 @@ class SklearnTopicModels():
             "Tfidf": TfidfVectorizer()
         }
 
-        self.model_options = {
+        self.estimator_options = {
             "LDA": LatentDirichletAllocation(
                 n_components=n_clusters, random_state=self.RANDOM_STATE),
             "LSA": TruncatedSVD(n_components=n_clusters, random_state=self.RANDOM_STATE),
@@ -28,14 +28,14 @@ class SklearnTopicModels():
 
         self.model = Pipeline([
             ('vect', self.vector_options[vectorizer]),
-            ('model', self.model_options[estimator])
+            ('model', self.estimator_options[estimator])
         ])
 
     def fit_transform(self, documents):
         self.model.fit_transform(documents)
         return self.model
 
-    def get_topics(self, n_top_words=25):
+    def get_topics(self, n_top_words=15):
         """
         n_top_words is the number of top terms to show for each topic
         """
@@ -54,7 +54,6 @@ class SklearnTopicModels():
         mds can be pca as default or tsne or mmds
         """
         try:
-
             pyLDAvis.enable_notebook()
             vectorizer = self.model.named_steps["vect"]
             vocab = self.model.named_steps['vect'].fit_transform(documents)
@@ -63,5 +62,16 @@ class SklearnTopicModels():
             return pyLDAvis.sklearn.prepare(model, vocab, vectorizer, mds=mds)
 
         except:
-
             print("ERROR pyLDAvis cannot print this model")
+
+    def get_topic_documents(self, documents, jobs_id):
+
+        topics_documents = self.model.transform(documents)
+        topics = [
+            [document.tolist().index(document.max()), document.max()]
+            for document in topics_documents]
+        jobs_topic = [
+            {"job_id": element[0], "cluster": element[1][0], "probability": element[1][1]}
+            for element in zip(jobs_id, topics)]
+
+        return jobs_topic
