@@ -8,9 +8,7 @@ import pandas as pd
 
 class SklearnTopicModels():
 
-    RANDOM_STATE = 42
-
-    def __init__(self, n_clusters, vectorizer, estimator):
+    def __init__(self, vectorizer, estimator, **kwargs):
         """
         n_clusters is the desired number of topics
         """
@@ -20,10 +18,9 @@ class SklearnTopicModels():
         }
 
         self.estimator_options = {
-            "LDA": LatentDirichletAllocation(
-                n_components=n_clusters, random_state=self.RANDOM_STATE),
-            "LSA": TruncatedSVD(n_components=n_clusters, random_state=self.RANDOM_STATE),
-            "NMF": NMF(n_components=n_clusters, random_state=self.RANDOM_STATE)
+            "LDA": LatentDirichletAllocation(**kwargs),
+            "LSA": TruncatedSVD(**kwargs),
+            "NMF": NMF(**kwargs)
         }
 
         self.model = Pipeline([
