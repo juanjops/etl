@@ -1,6 +1,6 @@
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import LatentDirichletAllocation, TruncatedSVD, NMF
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
 import pyLDAvis
 import pyLDAvis.sklearn
 import pandas as pd
@@ -12,20 +12,23 @@ class SklearnTopicModels():
         """
         n_clusters is the desired number of topics
         """
-        self.vector_options = {
-            "Count": CountVectorizer(binary=True),
-            "Tfidf": TfidfVectorizer()
-        }
+        self.vector_options = (
+            CountVectorizer(binary=True) if vectorizer == "Count" else
+            HashingVectorizer(binary=True) if vectorizer == "Hash" else
+            TfidfVectorizer() if vectorizer == "Tfidf" else
+            None
+        )
 
-        self.estimator_options = {
-            "LDA": LatentDirichletAllocation(**kwargs),
-            "LSA": TruncatedSVD(**kwargs),
-            "NMF": NMF(**kwargs)
-        }
+        self.estimator_options = (
+            LatentDirichletAllocation(**kwargs) if vectorizer == "LDA" else
+            TruncatedSVD(**kwargs) if vectorizer == "LSA" else
+            NMF(**kwargs) if vectorizer == "NMF" else
+            None
+        )
 
         self.model = Pipeline([
-            ('vect', self.vector_options[vectorizer]),
-            ('model', self.estimator_options[estimator])
+            ('vect', self.vector_options),
+            ('model', self.estimator_options)
         ])
 
     def fit_transform(self, documents):

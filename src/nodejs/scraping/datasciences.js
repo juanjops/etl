@@ -59,7 +59,7 @@ const getJobsId = async (job_search_specs) => {
 
     try {
 
-        const browser = await puppeteer.launch({headless: false})
+        const browser = await puppeteer.launch({headless: true})
         const page = await browser.newPage()
         await page.goto(LINKEDIN_URL + "/login")
         await page.type('#username', C.JUANJO_USER)
@@ -104,7 +104,7 @@ const getJobsId = async (job_search_specs) => {
 
 async function scroll(page) {
     return page.evaluate(() => {
-        document.querySelector('.jobs-search__left-rail').scrollBy(0,10)
+        document.querySelector('.jobs-search-results').scrollBy(0,10)
     });
 }
 
