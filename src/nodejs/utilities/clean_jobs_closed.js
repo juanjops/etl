@@ -14,7 +14,9 @@ const agent = new httpsProxyAgent(C.PROXY)
 const main = async () => {
     
     const jobs_id = await get_jobs_id(COLLECTION_URL)
+
     console.log(jobs_id.length)
+
 
     for (let page_number = 0; page_number < (Math.round(jobs_id.length/100) + 2); page_number++) {
         console.log(page_number)

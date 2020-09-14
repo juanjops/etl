@@ -53,7 +53,6 @@ def create_analysis(data_base):
 
     print("start time: ", datetime.datetime.now())
     delete_repeated_jobs(data_base, COLLECTION)
-    print("raw collection jobs: ", data_base[COLLECTION].count_documents({}))
     jobs_id = [job["job_id"] for job in list(
         data_base[COLLECTION].find({}, {"job_id":1}))]
     jobs_id_already_analyzed = [job["job_id"] for job in list(
@@ -99,7 +98,7 @@ def get_job_analysis(job):
         job["CI_CD"] = text_analysis[5]["CI/CD"]
         job["Serv"] = text_analysis[5]["Serv"]
         job["language"] = text_analysis[6]
-        job["salary"] = text_analysis[7]
+        # job["salary"] = text_analysis[7]
         del job["text"]
     except: # pylint: disable=bare-except
         job["language"] = None
@@ -114,7 +113,7 @@ def get_job_analysis(job):
         job["CI_CD"] = None
         job["Serv"] = None
         job["language"] = None
-        job["salary"] = None
+        # job["salary"] = None
 
 
 if __name__ == "__main__":
