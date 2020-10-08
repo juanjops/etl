@@ -20,4 +20,5 @@ The node.js data science scraping task is launch like
 node data_science.js node --max-old-space-size=2048 datasciences.js --key_words="data science" --location="Switzerland" --time_range="Past Month" . T
 The flag of --max-old-space-size is necessary only in case the memory in that task is below the capacities, for example, in a virtual machine maybe its necessary to increase the ram memory. This issue is based on the default memory use by any node task of 1024mb as ram, so in case the task requires more it fails. 
 
-When 30000 jobs are reached, due to memory limitations, some process from the .py tasks cannot be performed. In the mongo.ipynb there is a task that saves as csv some part of the dataset and deletes that part to enable keep working.
+When 30000 jobs are reached, due to memory limitations, some process from the .py tasks cannot be performed. In the mongo.ipynb there is a task that saves as csv some part of the dataset and deletes that part to enable keep working. After saving as csv, to import again to datasciences_backup do
+/c/Users/Sectorea/mongodb/bin/mongoimport.exe --uri="mongodb+srv://jobs:f4Uo1b3ziIAhpPMf@cluster0-79fkx.mongodb.net/jobs?retryWrites=true&w=majority" --collection=datasciences_backup --type=csv --headerline /c/Users/Sectorea/Code/etl/src/python/notebooks/2020-04-30.csv
