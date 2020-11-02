@@ -59,7 +59,7 @@ const getJobsId = async (job_search_specs) => {
     3
     try {
 
-        const browser = await puppeteer.launch({headless: false})
+        const browser = await puppeteer.launch({headless: true})
         const page = await browser.newPage()
         await page.goto(LINKEDIN_URL + "/login")
         await page.type('#username', C.JUANJO_USER)
