@@ -7,9 +7,9 @@ const httpProxyAgent = require('http-proxy-agent')
 
 
 const JOB_SEARCH_SPECS = {
-    "key_words": args.key_words,
+    "key_words": args.key-words,
     "location" : args.location,
-    "time_range": args.time_range
+    "time_range": args.time-range
 }
 
 const TIMES_PARAMETERS = {
@@ -56,10 +56,10 @@ const filtered_array = (jobs_id) => {
 const getJobsId = async (job_search_specs) => {
 
     jobs_id = []
-
+    3
     try {
 
-        const browser = await puppeteer.launch({headless: true})
+        const browser = await puppeteer.launch({headless: false})
         const page = await browser.newPage()
         await page.goto(LINKEDIN_URL + "/login")
         await page.type('#username', C.JUANJO_USER)
