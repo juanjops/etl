@@ -66,10 +66,10 @@ const filtered_array = (jobs_id) => {
 const getJobsId = async (job_search_specs) => {
 
     jobs_id = []
-    3
+    
     try {
 
-        const browser = await puppeteer.launch({headless: true})
+        const browser = await puppeteer.launch({headless: false})
         const page = await browser.newPage()
         await page.goto(LINKEDIN_URL + "/login")
         await page.type('#username', C.JUANJO_USER)
@@ -98,7 +98,9 @@ const getJobsId = async (job_search_specs) => {
                 console.log("Jobs Number: " + jobs_number)
             }
             await page.waitFor(1000 * SECS)
-            for (let index = 0; index < 400; index++) {await scroll(page)}
+            for (let index = 0; index < 400; index++) {
+                await scroll(page)
+            }
             await page.waitFor(1000 * SECS)
             const jobs_id_page = await getHtmlContent(page)
             if (jobs_id_page.length === 0) {
@@ -116,11 +118,14 @@ const getJobsId = async (job_search_specs) => {
 
 }
 
+
 async function scroll(page) {
-    return page.evaluate(() => {
-        document.querySelector('.jobs-search-results').scrollBy(0,10)
+    await page.evaluate(() => {
+        document.querySelector('.jobs-search-results')
+            .scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'end' })
     });
 }
+
 
 async function getHtmlContent(page) {
     const jobs_id_page = []
@@ -164,6 +169,5 @@ const getJobContent = async (job_id) => {
     }
 
 }
-
 
 main(JOB_SEARCH_SPECS)
